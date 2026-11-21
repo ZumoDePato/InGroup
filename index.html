@@ -444,7 +444,7 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
     <button class="mode" data-go="acordes"><span class="ico"><svg viewBox="0 0 32 32"><path d="M8 26V12M16 26V6M24 26V15"/></svg></span>
       <div><b>Construir acorde</b><span>3 o 4 voces que se desafinan solas. Empástalas.</span></div><i>›</i></button>
     <button class="mode" data-go="embocadura"><span class="ico"><svg viewBox="0 0 32 32"><path d="M7 5h18v4h-3c-2 2-3 5-4 7v11h-4V16c-1-2-2-5-4-7H7z"/></svg></span>
-      <div><b>Embocadura</b><span>Retira, coloca, respira y toca. Estilo Popers.</span></div><i>›</i></button>
+      <div><b>Embocadura</b><span>Retira, coloca, respira y toca.</span></div><i>›</i></button>
   </div>
   <div class="sect">Progreso</div>
   <div class="modes"><button class="mode" data-go="records"><span class="ico"><svg viewBox="0 0 32 32"><path d="M10 5h12v6a6 6 0 0 1-12 0zM10 8H6a4 4 0 0 0 4 5M22 8h4a4 4 0 0 1-4 5M16 17v5M11 27h10M13 22h6v5h-6z"/></svg></span>
@@ -808,7 +808,7 @@ $('#cGo').onclick=cStart;$('#cStop').onclick=()=>cStop(false);
   const up=()=>drag=null;box.addEventListener('pointerup',up);box.addEventListener('pointercancel',up);
   box.addEventListener('keydown',e=>{const tr=e.target.closest('.track');if(!tr||!C.on)return;const v=C.vs[+tr.dataset.i];if(v.lk!=null)return;if(e.key==='ArrowUp'){v.corr=Math.min(50,v.corr+1);e.preventDefault()}if(e.key==='ArrowDown'){v.corr=Math.max(-50,v.corr-1);e.preventDefault()}})}
 
-/* ---------- MODO 4: embocadura (estilo Popers) ---------- */
+/* ---------- MODO 4: embocadura ---------- */
 const RANGES=[['Medio',.5],['Grave',.25],['Agudo',.75],['Variado',-1]];
 const INST=[{n:'Trompeta en Si♭',c:'G',t:2,lo:58,hi:81},{n:'Trompa en Fa',c:'G',t:7,lo:57,hi:79},{n:'Trombón',c:'F',t:0,lo:40,hi:65},{n:'Bombardino',c:'F',t:0,lo:41,hi:65},{n:'Tuba',c:'F',t:0,lo:30,hi:50},{n:'Concierto (Do)',c:'G',t:0,lo:55,hi:79}];
 let eInst=[0];const PRI=()=>INST[eInst[0]];
