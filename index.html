@@ -152,6 +152,13 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
 .tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tabs [aria-current=page]{color:#0a1424;background:var(--silver)}
 .wrap{padding-bottom:110px}
+.modal{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(4,8,16,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.modal.on{display:flex;animation:fade .2s}
+.modal .box{width:min(100%,400px);background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:24px;padding:24px 20px 20px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.5);animation:rise .28s ease-out}
+.modal .qi{width:64px;height:64px;border-radius:16px;margin-bottom:12px}
+.modal p{color:var(--mute);margin:10px 0 18px}
+.danger{background:rgba(255,133,119,.16);border-color:var(--bad);color:#ffd2cc}
+@keyframes fade{from{opacity:0}}@keyframes rise{from{opacity:0;transform:translateY(20px) scale(.96)}}
 .hist{display:flex;gap:6px;min-height:26px;justify-content:center;flex-wrap:wrap}
 .hist i{font-style:normal;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;animation:pop .4s}
 .hist i.y{background:rgba(95,214,180,.2);color:var(--ok)}.hist i.n{background:rgba(255,133,119,.2);color:var(--bad)}.hist i.q{background:var(--line);color:var(--mute)}
@@ -335,6 +342,12 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
   <p class="hint" style="margin-top:14px">Se guardan en este dispositivo.</p>
 </section>
 </div>
+<div class="modal" id="mQuit" role="dialog" aria-modal="true" aria-labelledby="qT"><div class="box">
+  <svg class="qi" aria-hidden="true"><use href="#logo"/></svg>
+  <h2 id="qT">¿Abandonar la partida?</h2>
+  <p>Perderás el progreso de esta partida y no se guardará. Cuando vuelvas empezará de cero.</p>
+  <div class="row"><button class="big" id="qStay">Seguir jugando</button><button class="big danger" id="qGo">Abandonar</button></div>
+</div></div>
 <nav class="tabs" aria-label="Modos">
   <button data-tab="intervalos"><svg viewBox="0 0 24 24"><circle cx="7" cy="16" r="3"/><circle cx="17" cy="8" r="3"/><path d="M10 14l4-4"/></svg>Intervalos</button>
   <button data-tab="afinar"><svg viewBox="0 0 24 24"><path d="M3 9h14a3 3 0 0 1 0 6H3"/><path d="M8 6v12"/></svg>Afinar</button>
@@ -409,12 +422,31 @@ const drawLives=(el,n)=>el.innerHTML=[0,1,2].map(i=>`<span class="life${i<n?'':'
 
 /* ---------- navegación ---------- */
 const VIEWS=['intervalos','afinar','acordes','embocadura','records'];
-function route(){const h=location.hash.slice(1),v=VIEWS.includes(h)?h:'home';stopAll();
+let curV='home',skipH=false,pendV=null;
+function busy(v){return v==='intervalos'?!!I.playing:v==='afinar'?T.phase!=='idle'&&T.lives>0:v==='acordes'?C.on:v==='embocadura'?E.on:false}
+function route(){const h=location.hash.slice(1),v=VIEWS.includes(h)?h:'home';
+  if(skipH){skipH=false;return}
+  if(v!==curV&&busy(curV)){pendV=v;skipH=true;location.hash=curV==='home'?'':curV;$('#mQuit').classList.add('on');$('#qStay').focus();return}
+  show(v)}
+$('#qStay').onclick=()=>{pendV=null;$('#mQuit').classList.remove('on')};
+$('#qGo').onclick=()=>{$('#mQuit').classList.remove('on');const v=pendV;pendV=null;resetAll();curV='home';location.hash=v==='home'?'':v};
+$('#mQuit').onclick=e=>{if(e.target.id==='mQuit')$('#qStay').click()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#mQuit').classList.contains('on'))$('#qStay').click()});
+function show(v){resetAll();curV=v;
   document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));document.querySelectorAll('.tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===v?'page':'false'));if(v==='home')bests();if(v==='records')rRender();scrollTo(0,0)}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{ac();location.hash=b.dataset.go});
 document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>location.hash='');document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{ac();location.hash=b.dataset.tab==='home'?'':b.dataset.tab});addEventListener('hashchange',route);
 function bests(){const t=MODES.map(([k,n])=>[n,(board(k)[0]||{}).s]).filter(x=>x[1]);$('#bests').innerHTML=t.length?'Tus mejores: '+t.map(([n,v])=>`${n} <b>${v}</b>`).join(' · '):''}
-function stopAll(){clearTimers();tStopVoices();cStop(true);eStop();if(typeof micOff==='function'&&MIC.on){micOff();$('#eMic').checked=false}}
+function resetAll(){clearTimers();iReset();tReset();cReset();eReset();if(MIC.on){micOff();$('#eMic').checked=false}}
+const OVT={};['iOt','iOp','tOt','tOp'].forEach(id=>OVT[id]=$('#'+id).textContent);OVT.cOp=$('#cO p').textContent;
+function iReset(){I.playing=false;I.done=true;I.cur=null;I.lives=3;I.score=0;I.delta=50;$('#iOt').textContent=OVT.iOt;$('#iOp').textContent=OVT.iOp;$('#iGo').textContent='Empezar';$('#iO').classList.add('on');
+  $('#ifb').textContent='';$('#iq').textContent='Escucha las dos notas.';$('#iArr').textContent='→';['#d1','#d2'].forEach(x=>$(x).classList.remove('play'));['#iLo','#iHi'].forEach(x=>$(x).classList.remove('right','wrong'));iBtns(false);iRender()}
+function tReset(){tStopVoices();Object.assign(T,{lives:3,score:0,round:1,u:0,phase:'idle'});$('#tOt').textContent=OVT.tOt;$('#tOp').textContent=OVT.tOp;$('#tGo').textContent='Empezar';$('#tO').classList.add('on');
+  $('#tFix').textContent='Fijar';$('#tFix').disabled=true;$('#tRef').disabled=true;$('#gauge').classList.remove('on');$('#tfb').textContent='';$('#tq').textContent='Suena la referencia; luego tu nota, desafinada.';tDraw();tHud()}
+function cReset(){if(C.on){C.on=false;cancelAnimationFrame(C.raf);C.vs.forEach(v=>v.v&&v.v.stop())}C.vs=[];C.score=0;C.level=1;$('#cStop').disabled=true;$('#bars').innerHTML='';$('#cN').textContent='—';$('#cMsg').textContent='Mantén el acorde empastado';$('#cT').textContent='0 s';$('#cBar').style.width='0';
+  $('#cO p').textContent=OVT.cOp;$('#cO button').textContent='Empezar';$('#cO').classList.add('on');cHud()}
+function eReset(){if(E.on){E.on=false;clearInterval(E.iv)}lit(-1);document.querySelectorAll('.beat').forEach(b=>{b.classList.remove('ci','rok','rno');delete b.dataset.r});
+  E.score=0;E.hits=0;E.tot=0;E.streak=0;E.w=null;$('#eC').textContent=0;$('#eRes').textContent='';$('#eHist').innerHTML='';$('#eN').classList.add('hid');$('#eN').textContent='?';$('#eHint').textContent='Embocadura firme todo el ejercicio.';$('#eGo').textContent='Empezar';$('#eGo').classList.add('pri');eStat();staff(null)}
 function chips(el,list,sel,cb){el.innerHTML=list.map((x,i)=>`<button class="chip" aria-pressed="${i===sel}" data-i="${i}">${x[0]}</button>`).join('');
   el.onclick=e=>{const b=e.target.closest('.chip');if(!b)return;el.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===b));cb(+b.dataset.i)}}
 
@@ -424,7 +456,7 @@ let iSel=0;const I={};chips($('#iChips'),INTS,0,i=>iSel=i);
 function iRender(){drawLives($('#iL'),I.lives);$('#iS').textContent=I.score;$('#iD').textContent=fmt(I.delta)+' ¢';
   $('#iBar').style.width=Math.min(100,Math.log(60/I.delta)/Math.log(60/1.5)*100)+'%'}
 function iBtns(on){['#iLo','#iHi','#iRep'].forEach(s=>$(s).disabled=!on)}
-function iStart(){Object.assign(I,{lives:3,score:0,delta:50,min:50,cur:null,done:false});$('#iO').classList.remove('on');$('#ifb').textContent='';iRender();iNew()}
+function iStart(){Object.assign(I,{lives:3,score:0,delta:50,min:50,cur:null,done:false,playing:true});$('#iO').classList.remove('on');$('#ifb').textContent='';iRender();iNew()}
 function iNew(){$('#iLo').classList.remove('right','wrong');$('#iHi').classList.remove('right','wrong');let s=INTS[iSel][1];if(s<0)s=[0,3,4,5,7,12][ri(0,5)];const base=ri(55,67),dir=Math.random()<.5?-1:1;
   I.cur={f1:mf(base),f2:cents(mf(base+s),dir*I.delta),dir};$('#iArr').textContent='→';
   $('#iq').textContent=s?`${INTS.find(x=>x[1]===s)[0]}: ¿la segunda nota está alta o baja?`:'¿La segunda suena más alta o más baja?';iPlay()}
@@ -433,8 +465,8 @@ function iAns(d){if(!I.cur||I.done)return;const ok=d===I.cur.dir,c=I.delta,fb=$(
   if(ok){I.score+=Math.round(400/c);I.delta=Math.max(1.5,c*(c>20?.8:c>6?.87:.92));I.min=Math.min(I.min,c);fb.className='fb ok';fb.textContent=`¡Bien! Distinguiste ${fmt(c)} ¢`}
   else{I.lives--;I.delta=Math.min(60,c*1.3);fb.className='fb bad';fb.textContent=`Estaba más ${I.cur.dir>0?'alta':'baja'} (${fmt(c)} ¢)`}
   fx(ST('intervalos'),ok,ok?'✓':'✗');if(ok)pop($('#iS'));const rb=I.cur.dir>0?'#iHi':'#iLo';$(rb).classList.add('right');if(!ok)$(d>0?'#iHi':'#iLo').classList.add('wrong');
-  I.cur=null;iRender();if(I.lives<=0)return later(iOver,900);later(iNew,1200)}
-function iOver(){I.done=true;const rec=saveScore('int',I.score,`hasta ${fmt(I.min)} ¢`);
+  I.cur=null;iRender();if(I.lives<=0){I.playing=false;return later(iOver,900)}later(iNew,1200)}
+function iOver(){I.done=true;I.playing=false;const rec=saveScore('int',I.score,`hasta ${fmt(I.min)} ¢`);
   $('#iOt').textContent=rec?'¡Nuevo récord!':'Sin boquillas';$('#iOp').textContent=`${I.score} puntos · tu oído llegó a ${fmt(I.min)} ¢`;$('#iGo').textContent='Otra vez';$('#iO').classList.add('on')}
 $('#iGo').onclick=()=>{ac();iStart()};$('#iLo').onclick=()=>iAns(-1);$('#iHi').onclick=()=>iAns(1);$('#iRep').onclick=iPlay;
 drawLives($('#iL'),3);
