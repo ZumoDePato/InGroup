@@ -658,11 +658,15 @@ function micErr(e){const inApp=!/github\.io$/.test(location.hostname);
   if(inApp)return `Aquí (vista previa de Claude) el micrófono está bloqueado. Abre la app en el navegador: <a href="https://zumodepato.github.io/InGroup/">zumodepato.github.io/InGroup</a>`;
   if(e&&e.name==='NotAllowedError')return 'Has denegado el permiso. En iPhone: Ajustes › Safari › Micrófono › Permitir, y recarga la página.';
   if(!navigator.mediaDevices)return 'Este navegador no deja usar el micrófono. Prueba en Safari o Chrome.';
+  if(e&&String(e.name).startsWith('audio:'))return 'El micrófono se ha abierto pero el audio no arranca ('+e.name.slice(6)+'). Cierra la app y vuelve a abrirla desde el icono, o prueba en Safari.';
   return 'No se pudo abrir el micrófono ('+(e&&e.name||'error')+'). Cierra otras apps que lo usen y vuelve a intentarlo.'}
-async function micOpen(){if(MIC.stream)return true;ac();try{if(!navigator.mediaDevices)throw{name:'NoMedia'};const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
-    MIC.stream=st;const src=AC.createMediaStreamSource(st),hp=AC.createBiquadFilter(),lp=AC.createBiquadFilter();hp.type='highpass';hp.frequency.value=110;lp.type='lowpass';lp.frequency.value=2200;
-    MIC.an=AC.createAnalyser();MIC.an.fftSize=2048;src.connect(hp);hp.connect(lp);lp.connect(MIC.an);MIC.src=src;MIC.buf=new Float32Array(2048);MIC.on=true;return true}
-  catch(e){MIC.on=false;MIC.err=e;return false}}
+async function micOpen(){if(MIC.stream){if(AC&&AC.state!=='running')AC.resume();return true}
+  let st;try{if(!navigator.mediaDevices)throw{name:'NoMedia'};st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}
+  catch(e){MIC.on=false;MIC.err=e;return false}
+  try{ac();if(AC.state!=='running')await AC.resume();
+    const src=AC.createMediaStreamSource(st),hp=AC.createBiquadFilter(),lp=AC.createBiquadFilter();hp.type='highpass';hp.frequency.value=110;lp.type='lowpass';lp.frequency.value=2200;
+    MIC.an=AC.createAnalyser();MIC.an.fftSize=2048;src.connect(hp);hp.connect(lp);lp.connect(MIC.an);MIC.src=src;MIC.stream=st;MIC.buf=new Float32Array(2048);MIC.on=true;return true}
+  catch(e){st.getTracks().forEach(t=>t.stop());MIC.on=false;MIC.err={name:'audio:'+(e&&e.name||'error')};return false}}
 async function micOn(){if(await micOpen()){clearInterval(MIC.live);MIC.live=setInterval(micLive,120);$('#micMsg').textContent='Micrófono activo: tras cada nota verás si atinaste.'}
   else{$('#eMic').checked=false;$('#micMsg').innerHTML=micErr(MIC.err)}}
 function micOff(){MIC.on=false;clearInterval(MIC.live);$('#eLive').textContent='';MIC.src=null;MIC.stream&&MIC.stream.getTracks().forEach(t=>t.stop());MIC.stream=null;$('#micMsg').textContent=''}
