@@ -255,6 +255,7 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
   <div class="modes"><button class="mode" data-go="records"><span class="ico"><svg viewBox="0 0 32 32"><path d="M10 5h12v6a6 6 0 0 1-12 0zM10 8H6a4 4 0 0 0 4 5M22 8h4a4 4 0 0 1-4 5M16 17v5M11 27h10M13 22h6v5h-6z"/></svg></span>
     <div><b>Récords</b><span>Tus 10 mejores partidas de cada modo.</span></div><i>›</i></button></div>
   <p class="best" id="bests"></p>
+  <p class="best" style="opacity:.6">Versión 21 nov · 12:45</p>
 </section>
 
 <!-- INTERVALOS -->
@@ -429,10 +430,10 @@ const TIM={
   trombon:{h:[1,.88,.72,.56,.42,.3,.2,.13,.08],cut:[600,3400],q:1.4},
   trompa:{h:[1,.5,.28,.14,.07,.035],cut:[500,1700],q:.7},
   puro:{h:[1],cut:[14000,14000],q:.1}};
-let unlocked=false,mvol=(()=>{try{const v=localStorage.getItem('ingroup-vol');return v==null?.85:+v}catch(e){return .85}})();
+let KEEP=null,unlocked=false,mvol=(()=>{try{const v=localStorage.getItem('ingroup-vol');return v==null?.85:+v}catch(e){return .85}})();
 function ac(){if(!AC){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
     AC=new(window.AudioContext||window.webkitAudioContext)();const comp=AC.createDynamicsCompressor();master=AC.createGain();master.gain.value=mvol;master.connect(comp);comp.connect(AC.destination)}
-  if(!unlocked){unlocked=true;try{const a=new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA');a.loop=true;a.setAttribute('playsinline','');a.play().catch(()=>{})}catch(e){}
+  if(!unlocked){unlocked=true;try{const a=new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA');a.loop=true;a.setAttribute('playsinline','');KEEP=a;a.play().catch(()=>{})}catch(e){}
     try{const b=AC.createBuffer(1,1,22050),src=AC.createBufferSource();src.buffer=b;src.connect(AC.destination);src.start(0)}catch(e){}}
   if(AC.state!=='running')AC.resume();return AC}
 function setVol(v){mvol=v;if(master)master.gain.setTargetAtTime(v,AC.currentTime,.05);try{localStorage.setItem('ingroup-vol',v)}catch(e){}document.querySelectorAll('.mvol').forEach(r=>r.value=Math.round(v*100))}
@@ -660,16 +661,22 @@ function micErr(e){const inApp=!/github\.io$/.test(location.hostname);
   if(!navigator.mediaDevices)return 'Este navegador no deja usar el micrófono. Prueba en Safari o Chrome.';
   if(e&&String(e.name).startsWith('audio:'))return 'El micrófono se ha abierto pero el audio no arranca ('+e.name.slice(6)+'). Cierra la app y vuelve a abrirla desde el icono, o prueba en Safari.';
   return 'No se pudo abrir el micrófono ('+(e&&e.name||'error')+'). Cierra otras apps que lo usen y vuelve a intentarlo.'}
-async function micOpen(){if(MIC.stream){if(AC&&AC.state!=='running')AC.resume();return true}
-  let st;try{if(!navigator.mediaDevices)throw{name:'NoMedia'};st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}})}
+function audioType(t){try{if(navigator.audioSession)navigator.audioSession.type=t}catch(e){}}
+const gum=c=>navigator.mediaDevices.getUserMedia(c);
+async function micOpen(){if(MIC.stream){if(AC&&AC.state!=='running')await AC.resume().catch(()=>{});return true}
+  if(KEEP){try{KEEP.pause()}catch(e){}}
+  audioType('play-and-record');
+  let st;try{if(!navigator.mediaDevices)throw{name:'NoMedia'};
+    const tries=[()=>gum({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}}),()=>{audioType('auto');return gum({audio:true})},()=>{audioType('play-and-record');return gum({audio:true})}];
+    for(let i=0;i<tries.length;i++){try{st=await tries[i]();break}catch(e){if(i===tries.length-1||e.name==='NotAllowedError'||e.name==='NoMedia')throw e;await new Promise(r=>setTimeout(r,350))}}}
   catch(e){MIC.on=false;MIC.err=e;return false}
-  try{ac();if(AC.state!=='running')await AC.resume();
+  try{ac();audioType('play-and-record');if(AC.state!=='running')await AC.resume();
     const src=AC.createMediaStreamSource(st),hp=AC.createBiquadFilter(),lp=AC.createBiquadFilter();hp.type='highpass';hp.frequency.value=110;lp.type='lowpass';lp.frequency.value=2200;
     MIC.an=AC.createAnalyser();MIC.an.fftSize=2048;src.connect(hp);hp.connect(lp);lp.connect(MIC.an);MIC.src=src;MIC.stream=st;MIC.buf=new Float32Array(2048);MIC.on=true;return true}
   catch(e){st.getTracks().forEach(t=>t.stop());MIC.on=false;MIC.err={name:'audio:'+(e&&e.name||'error')};return false}}
 async function micOn(){if(await micOpen()){clearInterval(MIC.live);MIC.live=setInterval(micLive,120);$('#micMsg').textContent='Micrófono activo: tras cada nota verás si atinaste.'}
   else{$('#eMic').checked=false;$('#micMsg').innerHTML=micErr(MIC.err)}}
-function micOff(){MIC.on=false;clearInterval(MIC.live);$('#eLive').textContent='';MIC.src=null;MIC.stream&&MIC.stream.getTracks().forEach(t=>t.stop());MIC.stream=null;$('#micMsg').textContent=''}
+function micOff(){MIC.on=false;clearInterval(MIC.live);$('#eLive').textContent='';MIC.src=null;audioType('playback');MIC.stream&&MIC.stream.getTracks().forEach(t=>t.stop());MIC.stream=null;$('#micMsg').textContent=''}
 function pitch(){const b=MIC.buf;MIC.an.getFloatTimeDomainData(b);const W=1024,sr=AC.sampleRate;let rms=0;for(let i=0;i<W;i++)rms+=b[i]*b[i];if(Math.sqrt(rms/W)<SENS[eSI][1])return 0;
   const minL=Math.floor(sr/1400),maxL=Math.min(1023,Math.floor(sr/70));let run=0,tau=-1,gm=9,gl=-1;const cm=new Float32Array(maxL+2);
   for(let l=1;l<=maxL+1;l++){let d=0;for(let i=0;i<W;i++){const x=b[i]-b[i+l];d+=x*x}run+=d;cm[l]=d*l/(run||1);if(l>=minL&&l<=maxL&&cm[l]<gm){gm=cm[l];gl=l}}
