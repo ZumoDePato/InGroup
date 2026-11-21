@@ -7,7 +7,7 @@
 <radialGradient id="mpGlow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#8fb8ff" stop-opacity=".2"/><stop offset=".75" stop-color="#8fb8ff" stop-opacity=".1"/><stop offset="1" stop-color="#8fb8ff" stop-opacity=".03"/></radialGradient>
 <filter id="mpBlur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
 <filter id="mpSoft"><feGaussianBlur stdDeviation=".6"/></filter>
-<clipPath id="mpClip"><path id="mpSil" d="M4 20V29Q4 36.5 10 38.5L11 39.5C11 54 12 64 16.5 71.5C22 80 30 84 36 88V104H34.5V110H36L39.5 246Q39.5 250 43.5 250H56.5Q60.5 250 60.5 246L64 110H65.5V104H64V88C70 84 78 80 84 71C88 64 89 54 89 39.5L90 38.5Q96 36.5 96 29V20Z"/></clipPath>
+<clipPath id="mpClip"><path id="mpSil" d="M4 20V29Q4 36.5 10 38.5L15.5 39.5C15.5 54 16.5 63 20.5 70.5C25.5 79 31 84 36 88V104H34.5V110H36L39.5 246Q39.5 250 43.5 250H56.5Q60.5 250 60.5 246L64 110H65.5V104H64V88C69 84 74.5 79 79.5 70.5C83.5 63 84.5 54 84.5 39.5L90 38.5Q96 36.5 96 29V20Z"/></clipPath>
 
 <linearGradient id="mpCupWall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a303b"/><stop offset=".12" stop-color="#6d7480"/><stop offset=".38" stop-color="#e6e7e8"/><stop offset=".55" stop-color="#b9bcc1"/><stop offset=".78" stop-color="#4b525e"/><stop offset="1" stop-color="#151a23"/></linearGradient>
 <radialGradient id="mpThroat" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000"/><stop offset=".45" stop-color="#05080d"/><stop offset="1" stop-color="#05080d" stop-opacity="0"/></radialGradient>
@@ -25,14 +25,14 @@
 <g clip-path="url(#mpClip)">
 <rect x="0" y="0" width="100" height="255" fill="url(#mpVShade)"/>
 <ellipse cx="50" cy="36" rx="44" ry="8" fill="#0b1220" opacity=".35" filter="url(#mpBlur)"/>
-<path d="M10 44C12 60 16 70 24 78" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55" filter="url(#mpSoft)"/>
+<path d="M14.5 44C16 59 19.5 68 26 77" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".55" filter="url(#mpSoft)"/>
 <path d="M40.5 114L43 244" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity=".85" filter="url(#mpSoft)"/>
-<path d="M16 71C22 80 30 84 36 88H64C70 84 78 80 84 71" fill="none" stroke="#0b1220" stroke-width="3" opacity=".18" filter="url(#mpSoft)"/>
+<path d="M20.5 70.5C25.5 79 31 84 36 88H64C69 84 74.5 79 79.5 70.5" fill="none" stroke="#0b1220" stroke-width="3" opacity=".18" filter="url(#mpSoft)"/>
 </g>
 <g fill="none" stroke-linecap="round"><path d="M36 92Q50 95.6 64 92" stroke="#1a1f29" stroke-width="1.6" opacity=".8"/><path d="M36 93.6Q50 97.2 64 93.6" stroke="#fff" stroke-width="1.1" opacity=".75"/><path d="M36 90.7Q50 94.3 64 90.7" stroke="#fff" stroke-width=".7" opacity=".4"/><path d="M36 97.2Q50 100.8 64 97.2" stroke="#1a1f29" stroke-width="1.6" opacity=".8"/><path d="M36 98.8Q50 102.4 64 98.8" stroke="#fff" stroke-width="1.1" opacity=".75"/><path d="M36 95.9Q50 99.5 64 95.9" stroke="#fff" stroke-width=".7" opacity=".4"/><path d="M34.5 104.2Q50 107.8 65.5 104.2" stroke="#fff" stroke-width="1.4" opacity=".85"/><path d="M34.5 102.8Q50 106.4 65.5 102.8" stroke="#1a1f29" stroke-width="1.2" opacity=".55"/><path d="M34.6 110.4Q50 114 65.4 110.4" stroke="#1a1f29" stroke-width="2" opacity=".7"/><path d="M58.5 116L56.8 244" stroke="#2b3240" stroke-width="2.4" opacity=".25"/><path d="M37.8 150Q50 153.6 62.2 150" stroke="#1a1f29" stroke-width="1.6" opacity=".8"/><path d="M37.8 151.6Q50 155.2 62.2 151.6" stroke="#fff" stroke-width="1.1" opacity=".75"/><path d="M37.8 148.7Q50 152.3 62.2 148.7" stroke="#fff" stroke-width=".7" opacity=".4"/></g>
 <path d="M4 20V29Q4 36.5 10 38.5Q50 46 90 38.5Q96 36.5 96 29V20Z" fill="url(#mpBody)"/>
 <path d="M10 38.5Q50 46 90 38.5" fill="none" stroke="#1a2130" stroke-width="1.6" opacity=".55"/>
-<path d="M11 41Q50 48.5 89 41" fill="none" stroke="#0b1220" stroke-width="3" opacity=".3" filter="url(#mpSoft)"/>
+<path d="M15.5 41Q50 48.5 84.5 41" fill="none" stroke="#0b1220" stroke-width="3" opacity=".3" filter="url(#mpSoft)"/>
 <path d="M5 30Q8 38 30 41.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6" filter="url(#mpSoft)"/>
 <ellipse cx="50" cy="20" rx="46" ry="13" fill="url(#mpCrest)"/>
 <g clip-path="url(#mpRimClip)">
