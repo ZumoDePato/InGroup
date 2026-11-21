@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0a1424">
 <title>Ingroup</title>
-<link rel="apple-touch-icon" href="apple-touch-icon.png?v=4">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=4">
-<link rel="icon" type="image/svg+xml" href="icon.svg?v=4">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=5">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=5">
+<link rel="icon" type="image/svg+xml" href="icon.svg?v=5">
 <meta name="apple-mobile-web-app-title" content="Ingroup">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -221,6 +221,8 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
 <filter id="mpSoft2" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.2"/></filter>
 <clipPath id="mpCupClip"><ellipse cx="50" cy="21.8" rx="28.5" ry="7.6"/></clipPath>
 <clipPath id="mpRimClip"><ellipse cx="50" cy="20" rx="46" ry="13"/></clipPath>
+<radialGradient id="mpBowl" cx=".5" cy=".5" r=".5" fx=".5" fy=".9"><stop offset="0" stop-color="#000"/><stop offset=".22" stop-color="#06080c"/><stop offset=".42" stop-color="#1e242e"/><stop offset=".62" stop-color="#4c5462"/><stop offset=".8" stop-color="#a3a9b3"/><stop offset=".92" stop-color="#f2f3f5"/><stop offset="1" stop-color="#8d94a0"/></radialGradient>
+<linearGradient id="mpLipShade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset=".75" stop-color="#05070b" stop-opacity=".75"/><stop offset="1" stop-color="#05070b" stop-opacity=".95"/></linearGradient>
 <symbol id="logo" viewBox="0 0 200 200">
 <rect width="200" height="200" rx="46" fill="url(#mpBg)"/>
 <circle cx="100" cy="100" r="74" fill="url(#mpGlow)"/>
@@ -235,28 +237,30 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
 <path d="M40 112L44.5 280" stroke="#fff" stroke-width="3.2" stroke-linecap="round" opacity=".85" filter="url(#mpSoft)"/>
 <path d="M16 71C22 80 30 84 36 88H64C70 84 78 80 84 71" fill="none" stroke="#0b1220" stroke-width="3" opacity=".18" filter="url(#mpSoft)"/>
 </g>
-<g fill="none" stroke-linecap="round"><path d="M36 92Q50 95.6 64 92" stroke="#1a1f29" stroke-width="1.6" opacity=".8" filter="url(#mpSoft)"/><path d="M36 93.6Q50 97.2 64 93.6" stroke="#fff" stroke-width="1.1" opacity=".75" filter="url(#mpSoft)"/><path d="M36 90.7Q50 94.3 64 90.7" stroke="#fff" stroke-width=".7" opacity=".4"/><path d="M36 97.2Q50 100.8 64 97.2" stroke="#1a1f29" stroke-width="1.6" opacity=".8" filter="url(#mpSoft)"/><path d="M36 98.8Q50 102.4 64 98.8" stroke="#fff" stroke-width="1.1" opacity=".75" filter="url(#mpSoft)"/><path d="M36 95.9Q50 99.5 64 95.9" stroke="#fff" stroke-width=".7" opacity=".4"/><path d="M34.5 104.2Q50 107.8 65.5 104.2" stroke="#fff" stroke-width="1.4" opacity=".85" filter="url(#mpSoft)"/><path d="M34.5 102.8Q50 106.4 65.5 102.8" stroke="#1a1f29" stroke-width="1.2" opacity=".55" filter="url(#mpSoft)"/><path d="M34.6 110.4Q50 114 65.4 110.4" stroke="#1a1f29" stroke-width="2" opacity=".7" filter="url(#mpSoft)"/><path d="M58 114L55.6 280" stroke="#2b3240" stroke-width="2.4" opacity=".25" filter="url(#mpSoft)"/><path d="M37.8 150Q50 153.6 62.2 150" stroke="#1a1f29" stroke-width="1.6" opacity=".8" filter="url(#mpSoft)"/><path d="M37.8 151.6Q50 155.2 62.2 151.6" stroke="#fff" stroke-width="1.1" opacity=".75" filter="url(#mpSoft)"/><path d="M37.8 148.7Q50 152.3 62.2 148.7" stroke="#fff" stroke-width=".7" opacity=".4"/></g>
+<g fill="none" stroke-linecap="round"><path d="M36 92Q50 95.6 64 92" stroke="#1a1f29" stroke-width="1.6" opacity=".8"/><path d="M36 93.6Q50 97.2 64 93.6" stroke="#fff" stroke-width="1.1" opacity=".75"/><path d="M36 90.7Q50 94.3 64 90.7" stroke="#fff" stroke-width=".7" opacity=".4"/><path d="M36 97.2Q50 100.8 64 97.2" stroke="#1a1f29" stroke-width="1.6" opacity=".8"/><path d="M36 98.8Q50 102.4 64 98.8" stroke="#fff" stroke-width="1.1" opacity=".75"/><path d="M36 95.9Q50 99.5 64 95.9" stroke="#fff" stroke-width=".7" opacity=".4"/><path d="M34.5 104.2Q50 107.8 65.5 104.2" stroke="#fff" stroke-width="1.4" opacity=".85"/><path d="M34.5 102.8Q50 106.4 65.5 102.8" stroke="#1a1f29" stroke-width="1.2" opacity=".55"/><path d="M34.6 110.4Q50 114 65.4 110.4" stroke="#1a1f29" stroke-width="2" opacity=".7"/><path d="M58 114L55.6 280" stroke="#2b3240" stroke-width="2.4" opacity=".25"/><path d="M37.8 150Q50 153.6 62.2 150" stroke="#1a1f29" stroke-width="1.6" opacity=".8"/><path d="M37.8 151.6Q50 155.2 62.2 151.6" stroke="#fff" stroke-width="1.1" opacity=".75"/><path d="M37.8 148.7Q50 152.3 62.2 148.7" stroke="#fff" stroke-width=".7" opacity=".4"/></g>
 <path d="M4 20V29Q4 36.5 10 38.5Q50 46 90 38.5Q96 36.5 96 29V20Z" fill="url(#mpBody)"/>
 <path d="M10 38.5Q50 46 90 38.5" fill="none" stroke="#1a2130" stroke-width="1.6" opacity=".55"/>
 <path d="M11 41Q50 48.5 89 41" fill="none" stroke="#0b1220" stroke-width="3" opacity=".3" filter="url(#mpSoft)"/>
 <path d="M5 30Q8 38 30 41.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".6" filter="url(#mpSoft)"/>
 <ellipse cx="50" cy="20" rx="46" ry="13" fill="url(#mpCrest)"/>
 <g clip-path="url(#mpRimClip)">
-<ellipse cx="50" cy="24.5" rx="41" ry="11" fill="none" stroke="#fff" stroke-width="2.6" opacity=".75" filter="url(#mpSoft2)"/>
+<ellipse cx="50" cy="24.5" rx="41" ry="11" fill="none" stroke="#fff" stroke-width="1.6" opacity=".9"/>
 <ellipse cx="50" cy="15" rx="40" ry="8" fill="none" stroke="#3d4452" stroke-width="2.5" opacity=".35" filter="url(#mpSoft2)"/>
 </g>
 <ellipse cx="50" cy="20.6" rx="35.5" ry="9.4" fill="url(#mpInBevel)"/>
 <ellipse cx="50" cy="20.6" rx="35.5" ry="9.4" fill="none" stroke="#fff" stroke-width=".7" opacity=".55"/>
-<ellipse cx="50" cy="21.8" rx="28.5" ry="7.6" fill="url(#mpCupWall)"/>
-<g clip-path="url(#mpCupClip)">
-<ellipse cx="50" cy="14.5" rx="30" ry="6" fill="#0b1018" opacity=".55" filter="url(#mpSoft2)"/>
-<ellipse cx="50" cy="31" rx="32" ry="7" fill="#0b1018" opacity=".6" filter="url(#mpSoft2)"/>
-<ellipse cx="50" cy="24.6" rx="9" ry="3.2" fill="url(#mpThroat)" filter="url(#mpSoft)"/>
-<ellipse cx="50" cy="24.8" rx="3.6" ry="1.2" fill="#000"/>
-<path d="M33 19.5Q50 16.5 67 19.5" fill="none" stroke="#fff" stroke-width="1.6" opacity=".55" filter="url(#mpSoft)"/>
+<ellipse cx="50" cy="21.8" rx="28.5" ry="7.6" fill="url(#mpBowl)"/>
+<ellipse cx="50" cy="21.8" rx="28.5" ry="7.6" fill="url(#mpLipShade)"/>
+<path d="M24 19.4A28.5 7.6 0 0 1 76 19.4Q50 15.4 24 19.4Z" fill="#fff" opacity=".4"/>
+<g fill="none" stroke-width=".55">
+<path d="M26.5 22.6A23.5 5.4 0 0 1 73.5 22.6" stroke="#c9ced6" opacity=".55"/>
+<path d="M33 24.2A17 3.6 0 0 1 67 24.2" stroke="#8d95a2" opacity=".5"/>
+<path d="M39.5 25.4A10.5 2.2 0 0 1 60.5 25.4" stroke="#4c5462" opacity=".6"/>
 </g>
-<ellipse cx="50" cy="21.8" rx="28.5" ry="7.6" fill="none" stroke="#1d232d" stroke-width=".8" opacity=".6"/>
-<path d="M12 22.5Q20 31 50 33" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".85" filter="url(#mpSoft)"/>
+<ellipse cx="50" cy="27.4" rx="3.4" ry="1" fill="#000"/>
+<ellipse cx="50" cy="21.8" rx="28.5" ry="7.6" fill="none" stroke="#151a22" stroke-width=".9"/>
+<path d="M21.6 22.4A28.5 7.6 0 0 0 78.4 22.4" fill="none" stroke="#fff" stroke-width=".9" opacity=".9"/>
+<path d="M12 22.5Q20 31 50 33" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".85"/>
 <g fill="#121a2a">
 <ellipse cx="38.5" cy="57" rx="5.2" ry="6.4"/><ellipse cx="61.5" cy="57" rx="5.2" ry="6.4"/>
 </g>
