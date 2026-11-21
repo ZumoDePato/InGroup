@@ -125,7 +125,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:44px}
 .beat span{font-size:13px;color:var(--mute)}
 .beat.on{background:var(--silver)}.beat.on b,.beat.on span{color:#0a1424}
 .beat.play.on{background:var(--acc)}
-.staves{display:grid;gap:4px;width:100%;justify-items:center}.staff{width:min(100%,320px);height:160px}.staves.many .staff{height:118px}
+.staves{display:grid;gap:2px;width:calc(100% + 24px);margin:0 -12px;justify-items:center}.staff{display:block;width:100%;height:auto;overflow:visible}.staves.many{padding-bottom:22px}.staves.many .staff{margin-bottom:6px}
 .chip[data-n]:not([data-n=''])::after{content:attr(data-n);margin-left:8px;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#0a1424;color:#fff;font-size:12px}
 .nname{font:900 38px/1 "Big Shoulders Display",Impact,sans-serif;color:#fff;min-height:38px}
 .nname.hid{opacity:.15}
@@ -626,7 +626,7 @@ let eRI=0,eLI=0;chips($('#eRange'),RANGES,0,i=>eRI=i);chips($('#eLead'),LEADS,0,
 const E={on:false,bpm:72,next:0,beat:1,iv:0,w:null,count:0};
 $('#beats').innerHTML=LAB.map((l,i)=>`<div class="beat${i?'':' play'}"><b>${l[0]}</b><span>${l[1]}</span></div>`).join('');
 const STEP=[[0,''],[0,'♯'],[1,''],[2,'♭'],[2,''],[3,''],[3,'♯'],[4,''],[5,'♭'],[5,''],[6,'♭'],[6,'']];
-function staffSvg(m,clef,lab){const H=7,bot=118,x=196,b0=clef==='F'?18:30;let g='';for(let i=0;i<5;i++)g+=`<line x1="20" x2="304" y1="${bot-i*2*H}" y2="${bot-i*2*H}" stroke="#9db0c8" stroke-opacity=".6" stroke-width="1.5"/>`;
+function staffSvg(m,clef,lab,many){const H=7,bot=118,x=196,b0=clef==='F'?18:30;let g='';for(let i=0;i<5;i++)g+=`<line x1="20" x2="304" y1="${bot-i*2*H}" y2="${bot-i*2*H}" stroke="#9db0c8" stroke-opacity=".6" stroke-width="1.5"/>`;
   g+=clef==='F'?`<g fill="#dfe5ec" stroke="#dfe5ec"><circle cx="32" cy="${bot-42}" r="5.6" stroke="none"/><path d="M32 ${bot-42} C36 ${bot-54} 56 ${bot-52} 57 ${bot-36} C57 ${bot-20} 40 ${bot-8} 22 ${bot}" fill="none" stroke-width="4.2" stroke-linecap="round"/><circle cx="68" cy="${bot-49}" r="2.9" stroke="none"/><circle cx="68" cy="${bot-35}" r="2.9" stroke="none"/></g>`:`<text x="26" y="${bot+8}" font-size="92" fill="#dfe5ec" font-family="serif">𝄞</text>`;
   if(lab)g+=`<text x="304" y="20" text-anchor="end" font-size="15" font-family="Inter,sans-serif" fill="#9db0c8">${lab}</text>`;
   if(m!=null){const[st,acc]=STEP[((m%12)+12)%12],d=(Math.floor(m/12)-1)*7+st,y=bot-(d-b0)*H;
@@ -636,10 +636,10 @@ function staffSvg(m,clef,lab){const H=7,bot=118,x=196,b0=clef==='F'?18:30;let g=
     const up=d<b0+4;g+=up?`<line x1="${x+9}" x2="${x+9}" y1="${y-2}" y2="${y-48}" stroke="#f7f9fc" stroke-width="2.4"/>`:`<line x1="${x-9}" x2="${x-9}" y1="${y+2}" y2="${y+48}" stroke="#f7f9fc" stroke-width="2.4"/>`;
     const nf=DURS[eDI][1]===.5?1:DURS[eDI][1]===.25?2:0;for(let k=0;k<nf;k++){const o=k*10;g+=up?`<path d="M${x+9} ${y-48+o} q3 11 13 17 q7 6 2 19" fill="none" stroke="#f7f9fc" stroke-width="2.6" stroke-linecap="round"/>`:`<path d="M${x-9} ${y+48-o} q3 -11 13 -17 q7 -6 2 -19" fill="none" stroke="#f7f9fc" stroke-width="2.6" stroke-linecap="round"/>`}
     if(acc)g+=`<text x="${x-34}" y="${y+9}" font-size="28" fill="#f7f9fc">${acc}</text>`}
-  return`<svg class="staff" viewBox="0 0 320 170" aria-label="Pentagrama">${g}</svg>`}
+  return`<svg class="staff" viewBox="${many?'14 0 296 142':'14 0 296 172'}" aria-label="Pentagrama">${g}</svg>`}
 const wn=m=>NOTES[((m%12)+12)%12]+' '+(Math.floor(m/12)-1);
 function drawStaves(n){const many=eInst.length>1;$('#staves').classList.toggle('many',many);
-  $('#staves').innerHTML=eInst.map(i=>{const I=INST[i],m=n?n.ms[i]:null;return staffSvg(m,I.c,many?I.n+(m!=null?' · '+wn(m):''):'')}).join('')}
+  $('#staves').innerHTML=eInst.map(i=>{const I=INST[i],m=n?n.ms[i]:null;return staffSvg(m,I.c,many?I.n+(m!=null?' · '+wn(m):''):'',many)}).join('')}
 function click(t,acc){if(!$('#eClick').checked)return;const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=acc?1600:1000;
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(acc?.32:.2,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.04);o.connect(g);g.connect(master);o.start(t);o.stop(t+.05)}
 function pick(){let pc;do pc=ri(0,11);while(E.w&&pc===E.w.pc);let fr=RANGES[eRI][1];if(fr<0)fr=rnd(.15,.85);const ms={};
