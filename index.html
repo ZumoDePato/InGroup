@@ -3,250 +3,271 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a1424">
 <title>Ingroup</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* VOICE: sala de ensayo de una sección de metales; directo, cálido, un poco de banda de desfile.
-   IDEA: el estuche de trompeta abierto: terciopelo granate y latón pulido.
-   PICTURE: una campana de trompeta vista de frente; en cada modo, la propia pantalla de juego.
-   COLOUR and TYPE: terciopelo #2a0c12, latón #e9c46a→#a8741f, pátina #5fd1b0 para acierto; Big Shoulders + Inter.
-   LAYOUT: una columna de móvil (máx 760px), marcador arriba, escenario grande, controles abajo al alcance del pulgar. */
-:root{color-scheme:dark;--bg:#2a0c12;--bg2:#3b131b;--card:#46171f;--ink:#f7ecd8;--mute:#cbb7a0;--brass:#e9c46a;--brass2:#a8741f;--ok:#5fd1b0;--bad:#ff7b6b;--line:rgba(247,236,216,.14)}
+/* VOICE: sala de ensayo de una sección de metales; claro, sereno, preciso.
+   IDEA: trompeta plateada sobre el azul marino de un estuche de noche.
+   PICTURE: la boquilla Bach con carita; en cada modo, el propio escenario de juego.
+   COLOUR and TYPE: marino #0a1424/#13233d, plata #f7f9fc→#7e8b9c, azul hielo #8fb8ff de acento; Big Shoulders + Inter.
+   LAYOUT: cada modo igual: cabecera (volver · título · puntos) → escenario → acciones → ajustes. */
+:root{color-scheme:dark;--bg:#0a1424;--bg2:#0f1c33;--card:#13233d;--card2:#1a2e4d;--ink:#eef2f8;--mute:#9db0c8;--line:rgba(200,214,235,.14);--acc:#8fb8ff;--ok:#5fd6b4;--bad:#ff8577;--silver:linear-gradient(180deg,#ffffff,#e3e8ee 45%,#a3afbe)}
 :root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:radial-gradient(120% 70% at 50% 0%,#4a1620 0%,var(--bg) 60%) fixed,var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;min-height:100vh;-webkit-tap-highlight-color:transparent}
-.wrap{max-width:760px;margin:0 auto;padding:0 max(4vw,16px) 40px}
-header{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
-.logo{display:flex;align-items:center;gap:10px;font:900 30px/1 "Big Shoulders Display",Impact,sans-serif;letter-spacing:.5px;color:var(--brass);text-decoration:none}
+body{margin:0;background:radial-gradient(120% 60% at 50% 0%,#16284a 0%,var(--bg) 65%) fixed,var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,sans-serif;overflow-x:clip;min-height:100vh;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:760px;margin:0 auto;padding:0 max(4vw,16px) 48px}
+header{display:flex;align-items:center;gap:12px;padding:14px 0}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:900 28px/1 "Big Shoulders Display",Impact,sans-serif;letter-spacing:.5px;color:#fff}
+.logo svg{width:40px;height:40px;flex:none;border-radius:11px;box-shadow:0 2px 10px rgba(0,0,0,.5)}
 header .sp{flex:1}
-label.snd{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:8px}
 select,button,.chip{font:inherit;color:var(--ink)}
-select{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:16px;min-height:44px}
-button{cursor:pointer;border:0;border-radius:14px;min-height:48px;padding:12px 18px;font-weight:600;background:var(--card);border:1px solid var(--line)}
-button:focus-visible,select:focus-visible,.chip:focus-visible,.track:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+select{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:16px;min-height:44px}
+button{cursor:pointer;border-radius:14px;min-height:48px;padding:12px 18px;font-weight:600;background:var(--card2);border:1px solid var(--line)}
+button:focus-visible,select:focus-visible,.chip:focus-visible,.track:focus-visible,.slide:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
 button:disabled{opacity:.4;cursor:default}
-.gold{background:linear-gradient(180deg,#f6dc8e,#d9a943 55%,#a8741f);color:#2a0c12;border:0;box-shadow:0 2px 0 #6e4a10,inset 0 1px 0 #fff4c8}
-.back{min-height:44px;padding:8px 14px;background:none;font-weight:500;color:var(--mute)}
+.pri{background:var(--silver);color:#0a1424;border:0;box-shadow:0 2px 0 #5d6a7c,inset 0 1px 0 #fff}
 h1,h2{font-family:"Big Shoulders Display",Impact,sans-serif;font-weight:900;line-height:1.05;margin:0;text-wrap:balance}
-h1{font-size:clamp(40px,9vw,52px)}h2{font-size:34px}
+h1{font-size:clamp(42px,10vw,52px)}h2{font-size:32px}
 .view{display:none}.view.on{display:block}
-/* home */
-.hero{display:grid;place-items:center;padding:24px 0 8px;text-align:center}
-.bell{width:min(78vw,330px);aspect-ratio:1;filter:drop-shadow(0 24px 30px rgba(0,0,0,.45))}
-.lg{width:38px;height:38px;flex:none;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.5)}
-.logo span{background:linear-gradient(180deg,#fbe7a8,#e9c46a 45%,#a8741f);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.bell{border-radius:22%;animation:bob 5s ease-in-out infinite}
+/* inicio */
+.hero{display:grid;justify-items:center;text-align:center;padding:18px 0 6px}
+.hero svg{width:min(56vw,220px);aspect-ratio:1;border-radius:24%;box-shadow:0 22px 40px rgba(0,0,0,.5);animation:bob 5s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-6px) rotate(1.5deg)}}
-.beats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%;max-width:480px}
-.beat{border-radius:14px;padding:10px 4px;background:rgba(0,0,0,.28);border:1px solid var(--line);text-align:center;transition:background .08s}
-.beat b{display:block;font:900 30px/1 "Big Shoulders Display",Impact,sans-serif;color:var(--mute)}
-.beat span{font-size:13px;color:var(--mute)}
-.beat.on{background:var(--brass)}.beat.on b,.beat.on span{color:#2a0c12}
-.beat.play.on{background:var(--ok)}
-.staff{width:min(100%,320px);height:150px}
-.nname{font:900 40px/1 "Big Shoulders Display",Impact,sans-serif;color:var(--brass);min-height:40px}
-.nname.hid{opacity:.15}
-input[type=range]{width:100%;accent-color:var(--brass);height:44px}
-.tag{color:var(--mute);margin:10px 0 0;font-size:17px}
-.modes{display:grid;gap:12px;margin-top:22px}
-.mode{display:grid;grid-template-columns:56px minmax(0,1fr) auto;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:18px;background:linear-gradient(180deg,var(--card),var(--bg2));min-height:84px}
-.mode svg{width:56px;height:56px}
-.mode b{display:block;font:900 24px/1.1 "Big Shoulders Display",Impact,sans-serif;color:var(--brass)}
-.mode span{font-weight:400;color:var(--mute);font-size:14px}
-.mode i{font-style:normal;color:var(--brass);font-size:22px}
-.best{font-size:13px;color:var(--mute);text-align:center;margin-top:16px}
-/* hud */
-.hud{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 6px}
-.lives{display:flex;gap:2px;height:46px;align-items:center}
-.life svg{width:28px;height:46px;margin:0 4px;transform:rotate(-35deg);fill:url(#silverG);stroke:none;transition:transform .5s,opacity .5s}
-.life:nth-child(2) svg{margin-top:-8px}.life:nth-child(3) svg{margin-top:-16px}
-.life.lost svg{fill:none;stroke:rgba(247,236,216,.35);stroke-width:3;transform:rotate(-35deg) translateY(6px);opacity:.6}
-.score{text-align:right;font-variant-numeric:tabular-nums}
-.score b{font:900 34px/1 "Big Shoulders Display",Impact,sans-serif;color:var(--brass);display:block}
-.score small{color:var(--mute);font-size:13px}
-.stage{position:relative;background:radial-gradient(90% 90% at 50% 30%,#5a1d28,#33111a);border:1px solid var(--line);border-radius:24px;padding:22px 18px;margin:8px 0 14px;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;overflow:hidden}
-.dots{display:flex;align-items:center;gap:clamp(18px,6vw,48px)}
-.dot{width:clamp(92px,26vw,128px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font:900 46px/1 "Big Shoulders Display",Impact,sans-serif;color:#2a0c12;background:radial-gradient(circle at 50% 50%,#2a0c12 0 34%,#7a5414 35% 40%,#e9c46a 41% 62%,#fbe7a8 66%,#a8741f 72% 100%);position:relative;box-shadow:0 10px 24px rgba(0,0,0,.4)}
-.dot em{font-style:normal;color:var(--brass);position:relative;z-index:1}
-.dot.play::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:3px solid var(--brass);animation:ping .8s ease-out infinite}
+.hero h1{margin-top:18px}
+.tag{color:var(--mute);margin:8px 0 0;font-size:17px;max-width:34ch}
+.sect{font-size:13px;font-weight:600;color:var(--mute);margin:28px 0 10px}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px}
+.mode{display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:14px;text-align:left;padding:14px 16px;border-radius:18px;background:var(--card);min-height:84px}
+.mode:hover{background:var(--card2)}
+.ico{width:52px;height:52px;border-radius:14px;background:var(--bg);border:1px solid var(--line);display:grid;place-items:center}
+.ico svg{width:30px;height:30px;fill:none;stroke:#e3e8ee;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.mode b{display:block;font:900 23px/1.1 "Big Shoulders Display",Impact,sans-serif;color:#fff}
+.mode span{font-weight:400;color:var(--mute);font-size:14px;line-height:1.35}
+.mode i{font-style:normal;color:var(--mute);font-size:22px}
+.best{font-size:13px;color:var(--mute);text-align:center;margin-top:18px}
+/* cabecera de modo */
+.mhead{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:10px;margin:6px 0 12px}
+.mhead .bk{min-height:44px;width:44px;padding:0;font-size:20px;background:var(--card)}
+.score{text-align:right;font-variant-numeric:tabular-nums;line-height:1}
+.score b{font:900 32px/1 "Big Shoulders Display",Impact,sans-serif;color:#fff;display:block}
+.score small{color:var(--mute);font-size:12px}
+/* escenario */
+.stage{position:relative;background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:24px;padding:16px 18px 20px;min-height:320px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center;overflow:hidden}
+.top{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:46px;gap:10px}
+.top .info{font-size:13px;color:var(--mute);text-align:right;white-space:nowrap}
+.mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;width:100%}
+.lives{display:flex;align-items:center;height:46px}
+.life svg{width:18px;height:46px;margin:0 6px;transform:rotate(-35deg);fill:url(#chrome);transition:transform .5s,opacity .5s}
+.life.lost svg{fill:none;stroke:rgba(200,214,235,.4);stroke-width:5;transform:rotate(-35deg) translateY(6px);opacity:.6}
+.dots{display:flex;align-items:center;gap:clamp(18px,6vw,44px)}
+.dot{width:clamp(88px,25vw,118px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font:900 44px/1 "Big Shoulders Display",Impact,sans-serif;color:#0a1424;background:radial-gradient(circle at 50% 50%,#0a1424 0 33%,#5d6a7c 34% 38%,#e3e8ee 39% 60%,#fff 64%,#a3afbe 72% 100%);position:relative;box-shadow:0 10px 24px rgba(0,0,0,.45)}
+.dot em{font-style:normal;color:#fff}
+.dot.play::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:3px solid var(--acc);animation:ping .8s ease-out infinite}
 @keyframes ping{from{transform:scale(1);opacity:.9}to{transform:scale(1.35);opacity:0}}
-.arrow{font-size:30px;color:var(--mute);width:30px}
+.arrow{font-size:28px;color:var(--mute);width:28px}
 .q{font-size:18px;font-weight:600;max-width:30ch}
 .fb{min-height:26px;font-weight:700;font-size:17px}
 .fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
-.meter{width:100%;max-width:420px}
+.meter{width:100%}
 .meter .lab{display:flex;justify-content:space-between;font-size:13px;color:var(--mute)}
 .meter .lab b{color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
-.bar{height:10px;border-radius:6px;background:rgba(0,0,0,.35);overflow:hidden;margin-top:6px}
-.bar>div{height:100%;width:0;background:linear-gradient(90deg,#a8741f,#e9c46a,#fbe7a8);transition:width .6s}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
-.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:10px 14px;min-height:44px;font-size:15px;font-weight:500;cursor:pointer}
-.chip[aria-pressed=true]{background:var(--brass);color:#2a0c12;border-color:var(--brass)}
-.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-.big{min-height:64px;font-size:19px}
-.full{width:100%;margin-top:10px}
-.cap{font-size:13px;color:var(--mute);margin:2px 0 8px}
-.over{position:absolute;inset:0;background:rgba(42,12,18,.94);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;z-index:3}
+.bar{height:8px;border-radius:6px;background:rgba(0,0,0,.35);overflow:hidden;margin-top:6px}
+.bar>div{height:100%;width:0;background:linear-gradient(90deg,#5d7fb8,var(--acc),#fff);transition:width .6s}
+.over{position:absolute;inset:0;background:rgba(10,20,36,.95);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;z-index:3}
 .over.on{display:flex}
-.over p{margin:0;color:var(--mute)}
-/* afinar: vara de trombón */
-.slide{position:relative;width:100%;max-width:520px;height:110px;touch-action:none;cursor:grab;border-radius:18px;background:rgba(0,0,0,.25);border:1px dashed var(--line)}
-.slide svg{position:absolute;top:22px;left:50%;width:300px;height:66px;margin-left:-150px;pointer-events:none;transition:none}
-.fine{display:flex;gap:10px;align-items:center;justify-content:center}
-.fine button{min-width:64px}
+.over p{margin:0;color:var(--mute);max-width:32ch}
+/* acciones y ajustes */
+.actions{display:grid;gap:10px;margin:14px 0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.big{min-height:62px;font-size:19px}
+.settings{background:var(--bg2);border:1px solid var(--line);border-radius:20px;padding:6px 16px}
+.settings h3{font-size:13px;font-weight:600;color:var(--mute);margin:10px 0 2px}
+.set{padding:10px 0;border-top:1px solid var(--line)}
+.settings h3+.set{border-top:0}
+.set>.lab{font-size:14px;font-weight:600;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 14px;min-height:44px;font-size:15px;font-weight:500;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--silver);color:#0a1424;border-color:transparent}
+.toggle{display:flex;align-items:center;gap:12px;font-size:15px;min-height:44px;cursor:pointer}
+.toggle input{width:22px;height:22px;flex:none;accent-color:var(--acc)}
+input[type=range]{width:100%;accent-color:var(--acc);height:44px}
+/* afinar */
+.slide{position:relative;width:100%;max-width:520px;height:100px;touch-action:none;cursor:grab;border-radius:18px;background:rgba(0,0,0,.25);border:1px dashed var(--line)}
+.slide svg{position:absolute;top:18px;left:50%;width:300px;height:66px;margin-left:-150px;pointer-events:none}
+.fine{display:flex;gap:10px;align-items:center;justify-content:center;width:100%}
+.fine button{min-width:64px;min-height:44px}
+.fine span{font-size:13px;color:var(--mute)}
 .gauge{width:100%;max-width:420px;height:58px;position:relative;display:none}
 .gauge.on{display:block}
 .gauge .sc{position:absolute;left:0;right:0;top:24px;height:4px;background:var(--line);border-radius:2px}
-.gauge .ok{position:absolute;top:16px;height:20px;background:rgba(95,209,176,.25);border:1px solid var(--ok);border-radius:4px}
-.gauge .nd{position:absolute;top:6px;width:4px;height:40px;margin-left:-2px;background:var(--brass);border-radius:2px;transition:left .5s}
+.gauge .ok{position:absolute;top:16px;height:20px;background:rgba(95,214,180,.2);border:1px solid var(--ok);border-radius:4px}
+.gauge .nd{position:absolute;top:6px;width:4px;height:40px;margin-left:-2px;background:#fff;border-radius:2px;transition:left .5s}
 .gauge span{position:absolute;top:42px;font-size:12px;color:var(--mute);transform:translateX(-50%)}
-.toggle{display:flex;align-items:center;gap:10px;font-size:15px;min-height:44px;cursor:pointer}
-.toggle input{width:22px;height:22px;accent-color:var(--brass)}
 /* acordes */
-.chname{font:900 clamp(44px,12vw,64px)/1 "Big Shoulders Display",Impact,sans-serif;color:var(--brass)}
+.chname{font:900 clamp(38px,10vw,52px)/1 "Big Shoulders Display",Impact,sans-serif;color:#fff}
 .bars{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:clamp(8px,3vw,18px);width:100%;max-width:480px}
-.track{position:relative;height:280px;border-radius:16px;background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.4));border:1px solid var(--line);touch-action:none;cursor:ns-resize}
-.track::before{content:"";position:absolute;left:12%;right:12%;top:50%;border-top:1px dashed rgba(247,236,216,.25)}
-.track .hd{position:absolute;left:8%;right:8%;top:50%;height:40px;margin-top:-20px;border-radius:12px;background:linear-gradient(180deg,#fbe7a8,#e9c46a 40%,#a8741f);box-shadow:0 6px 14px rgba(0,0,0,.45),inset 0 1px 0 #fff6d6;display:grid;place-items:center;font-size:12px;font-weight:700;color:#2a0c12;transition:box-shadow .2s}
+.track{position:relative;height:270px;border-radius:16px;background:linear-gradient(180deg,rgba(0,0,0,.12),rgba(0,0,0,.38));border:1px solid var(--line);touch-action:none;cursor:ns-resize}
+.track::before{content:"";position:absolute;left:12%;right:12%;top:50%;border-top:1px dashed rgba(200,214,235,.25)}
+.track .hd{position:absolute;left:8%;right:8%;top:50%;height:40px;margin-top:-20px;border-radius:12px;background:var(--silver);box-shadow:0 6px 14px rgba(0,0,0,.45),inset 0 1px 0 #fff;display:grid;place-items:center;font-size:13px;font-weight:700;color:#0a1424;transition:box-shadow .2s}
 .track .hd.g{box-shadow:0 0 0 3px var(--ok),0 6px 14px rgba(0,0,0,.45)}
-.track .hd.y{box-shadow:0 0 0 3px #f0b44c,0 6px 14px rgba(0,0,0,.45)}
+.track .hd.y{box-shadow:0 0 0 3px #f2c14e,0 6px 14px rgba(0,0,0,.45)}
 .track .hd.r{box-shadow:0 0 0 3px var(--bad),0 6px 14px rgba(0,0,0,.45)}
-.track small{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:13px;color:var(--mute);font-weight:600}
 .track b{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:12px;color:var(--mute);font-weight:500}
-.lock{width:100%;max-width:480px}
+/* embocadura */
+.beats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%}
+.beat{border-radius:14px;padding:10px 4px;background:rgba(0,0,0,.28);border:1px solid var(--line);text-align:center;transition:background .08s}
+.beat b{display:block;font:900 28px/1 "Big Shoulders Display",Impact,sans-serif;color:var(--mute)}
+.beat span{font-size:13px;color:var(--mute)}
+.beat.on{background:var(--silver)}.beat.on b,.beat.on span{color:#0a1424}
+.beat.play.on{background:var(--acc)}
+.staff{width:min(100%,320px);height:150px}
+.nname{font:900 38px/1 "Big Shoulders Display",Impact,sans-serif;color:#fff;min-height:38px}
+.nname.hid{opacity:.15}
+.hint{font-size:14px;color:var(--mute);margin:0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-@media(max-width:600px){.sl{display:none}.back{white-space:nowrap;padding:8px 10px}body.inmode .logo span{display:none}}
-@media(max-width:420px){.track{height:240px}h2{font-size:30px}}
+@media(max-width:420px){.track{height:230px}h2{font-size:28px}}@media(max-width:340px){.logo span{display:none}}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-<linearGradient id="brassG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbe7a8"/><stop offset=".45" stop-color="#e9c46a"/><stop offset="1" stop-color="#a8741f"/></linearGradient>
-<linearGradient id="silverG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c3cad3"/><stop offset=".3" stop-color="#fff"/><stop offset="1" stop-color="#8c96a3"/></linearGradient>
-<radialGradient id="bellG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a0508"/><stop offset=".28" stop-color="#3a1a0a"/><stop offset=".55" stop-color="#8a5e1a"/><stop offset=".8" stop-color="#e9c46a"/><stop offset=".93" stop-color="#fff0bd"/><stop offset="1" stop-color="#a8741f"/></radialGradient>
+<linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8794a5"/><stop offset=".18" stop-color="#e9eef4"/><stop offset=".3" stop-color="#fff"/><stop offset=".52" stop-color="#cfd6df"/><stop offset=".76" stop-color="#8a96a7"/><stop offset=".9" stop-color="#bcc5d0"/><stop offset="1" stop-color="#77839a"/></linearGradient>
+<linearGradient id="rimG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#a3adba"/><stop offset=".2" stop-color="#fff"/><stop offset=".44" stop-color="#e3e8ee"/><stop offset=".58" stop-color="#2c3b56"/><stop offset=".68" stop-color="#cfd6df"/><stop offset="1" stop-color="#8794a5"/></linearGradient>
+<radialGradient id="lgBg" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="#1b2c4a"/><stop offset=".6" stop-color="#080f1c"/><stop offset="1" stop-color="#02050a"/></radialGradient>
+<symbol id="logo" viewBox="0 0 200 200">
+<rect width="200" height="200" rx="46" fill="url(#lgBg)"/>
+<circle cx="100" cy="100" r="72" fill="#8fb8ff" opacity=".06"/>
+<g transform="translate(100 102) rotate(-32) scale(.56) translate(-50 -151)">
+<path d="M50 10H89Q95 10 95 16V37Q95 43 89 43H84C84 66 72 86 63 90V103L66 104Q68 105 68 107.5Q68 110 66 111L65 112.5L66 114Q68 115 68 116.5Q68 118.5 66 119.5L65 121V154L66 158L60.7 290Q60.7 292 58.7 292H41.3Q39.3 292 39.3 290L34 158L35 154V121L34 119.5Q32 118.5 32 116.5Q32 115 34 114L35 112.5L34 111Q32 110 32 107.5Q32 105 34 104L37 103V90C28 86 16 66 16 43H11Q5 43 5 37V16Q5 10 11 10Z" fill="url(#chrome)"/>
+<rect x="5" y="10" width="90" height="33" rx="6" fill="url(#rimG)"/>
+<path d="M16 43.5H84" stroke="#56647a" stroke-width="2"/>
+<path d="M26 52C28 66 34 78 41 85" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".85"/>
+<path d="M43 162L45 284" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+<circle cx="41" cy="61" r="4.6" fill="#0f1c33"/><circle cx="59" cy="61" r="4.6" fill="#0f1c33"/>
+<circle cx="42.6" cy="59.3" r="1.5" fill="#fff"/><circle cx="60.6" cy="59.3" r="1.5" fill="#fff"/>
+<circle cx="33" cy="70" r="4.2" fill="#ff9aa2" opacity=".55"/><circle cx="67" cy="70" r="4.2" fill="#ff9aa2" opacity=".55"/>
+<path d="M43 71Q50 78 57 71" fill="none" stroke="#0f1c33" stroke-width="3.5" stroke-linecap="round"/>
+</g></symbol>
 </defs></svg>
 
 <div class="wrap">
 <header>
-  <a class="logo" href="#"><svg class="lg" viewBox="0 0 200 200" aria-hidden="true"><defs><radialGradient id="lgBg" cx=".5" cy=".45" r=".65"><stop offset="0" stop-color="#1c1f26"/><stop offset="1" stop-color="#050506"/></radialGradient><linearGradient id="lgS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c3cad3"/><stop offset=".28" stop-color="#ffffff"/><stop offset=".6" stop-color="#dde2e8"/><stop offset="1" stop-color="#8c96a3"/></linearGradient></defs>
-<rect width="200" height="200" rx="46" fill="url(#lgBg)"/>
-<circle cx="100" cy="100" r="66" fill="#fff" opacity=".04"/>
-<g transform="rotate(-30 100 98)"><path d="M72 36 Q72 30 78 30 H122 Q128 30 128 36 V38 C128 42 126 44 123 46 C118 50 115.5 57 112.5 67 C110.5 73 110 79 110 85 L107.5 161 Q107.5 166 103 166 H97 Q92.5 166 92.5 161 L90 85 C90 79 89.5 73 87.5 67 C84.5 57 82 50 77 46 C74 44 72 42 72 38 Z" fill="url(#lgS)"/>
-<path d="M73 38.5 H127" stroke="#8c96a3" stroke-width="1.2" opacity=".7"/><path d="M80 48 C86 54 88 62 90 72" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M91 96 H109" stroke="#8c96a3" stroke-width="1.2" opacity=".6"/>
-<circle cx="93" cy="54" r="3.2" fill="#1c1f26"/><circle cx="107" cy="54" r="3.2" fill="#1c1f26"/>
-<circle cx="87" cy="61" r="3.2" fill="#ff9aa2" opacity=".6"/><circle cx="113" cy="61" r="3.2" fill="#ff9aa2" opacity=".6"/>
-<path d="M95 60 Q100 65.5 105 60" fill="none" stroke="#1c1f26" stroke-width="2" stroke-linecap="round"/></g></svg><span>Ingroup</span></a>
-  <button class="back" id="back" hidden>← Modos</button>
+  <a class="logo" href="#"><svg><use href="#logo"/></svg><span>Ingroup</span></a>
   <span class="sp"></span>
-  <label class="snd"><span class="sl">Sonido</span>
-    <select id="timbre">
-      <option value="trompeta">Trompeta</option>
-      <option value="fliscorno">Fliscorno</option>
-      <option value="trombon">Trombón</option>
-      <option value="trompa">Trompa</option>
-      <option value="puro">Puro (seno)</option>
-    </select>
-  </label>
+  <select id="timbre" aria-label="Sonido">
+    <option value="trompeta">Trompeta</option>
+    <option value="fliscorno">Fliscorno</option>
+    <option value="trombon">Trombón</option>
+    <option value="trompa">Trompa</option>
+    <option value="puro">Puro (seno)</option>
+  </select>
 </header>
 
-<!-- HOME -->
+<!-- INICIO -->
 <section class="view on" id="v-home">
   <div class="hero">
-    <svg class="bell" viewBox="0 0 200 200" aria-hidden="true"><defs><radialGradient id="lgBg" cx=".5" cy=".45" r=".65"><stop offset="0" stop-color="#1c1f26"/><stop offset="1" stop-color="#050506"/></radialGradient><linearGradient id="lgS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c3cad3"/><stop offset=".28" stop-color="#ffffff"/><stop offset=".6" stop-color="#dde2e8"/><stop offset="1" stop-color="#8c96a3"/></linearGradient></defs>
-<rect width="200" height="200" rx="46" fill="url(#lgBg)"/>
-<circle cx="100" cy="100" r="66" fill="#fff" opacity=".04"/>
-<g transform="rotate(-30 100 98)"><path d="M72 36 Q72 30 78 30 H122 Q128 30 128 36 V38 C128 42 126 44 123 46 C118 50 115.5 57 112.5 67 C110.5 73 110 79 110 85 L107.5 161 Q107.5 166 103 166 H97 Q92.5 166 92.5 161 L90 85 C90 79 89.5 73 87.5 67 C84.5 57 82 50 77 46 C74 44 72 42 72 38 Z" fill="url(#lgS)"/>
-<path d="M73 38.5 H127" stroke="#8c96a3" stroke-width="1.2" opacity=".7"/><path d="M80 48 C86 54 88 62 90 72" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/><path d="M91 96 H109" stroke="#8c96a3" stroke-width="1.2" opacity=".6"/>
-<circle cx="93" cy="54" r="3.2" fill="#1c1f26"/><circle cx="107" cy="54" r="3.2" fill="#1c1f26"/>
-<circle cx="87" cy="61" r="3.2" fill="#ff9aa2" opacity=".6"/><circle cx="113" cy="61" r="3.2" fill="#ff9aa2" opacity=".6"/>
-<path d="M95 60 Q100 65.5 105 60" fill="none" stroke="#1c1f26" stroke-width="2" stroke-linecap="round"/></g></svg>
+    <svg aria-hidden="true"><use href="#logo"/></svg>
     <h1>Ingroup</h1>
-    <p class="tag">Afinación de sección para viento metal: intervalos, acordes en grupo y embocadura.</p>
+    <p class="tag">Afinación de sección para viento metal.</p>
   </div>
+  <div class="sect">Oído</div>
   <div class="modes">
-    <button class="mode" data-go="intervalos">
-      <svg viewBox="0 0 56 56"><circle cx="16" cy="34" r="9" fill="url(#brassG)"/><circle cx="40" cy="22" r="9" fill="url(#brassG)"/><path d="M27 30l6-4" stroke="#e9c46a" stroke-width="3" stroke-linecap="round"/></svg>
-      <div><b>Intervalos</b><span>Dos notas seguidas: ¿la segunda está alta o baja? 3 vidas.</span></div><i>›</i></button>
-    <button class="mode" data-go="afinar">
-      <svg viewBox="0 0 56 56"><rect x="6" y="20" width="44" height="6" rx="3" fill="url(#brassG)"/><rect x="6" y="32" width="44" height="6" rx="3" fill="url(#brassG)"/><path d="M50 23v12" stroke="#e9c46a" stroke-width="6" stroke-linecap="round"/></svg>
-      <div><b>Afinar nota</b><span>Suena una referencia y ajustas tu nota con la vara.</span></div><i>›</i></button>
-    <button class="mode" data-go="acordes">
-      <svg viewBox="0 0 56 56"><rect x="8" y="10" width="10" height="36" rx="4" fill="url(#brassG)"/><rect x="23" y="16" width="10" height="30" rx="4" fill="url(#brassG)"/><rect x="38" y="6" width="10" height="40" rx="4" fill="url(#brassG)"/></svg>
+    <button class="mode" data-go="intervalos"><span class="ico"><svg viewBox="0 0 32 32"><circle cx="9" cy="21" r="4"/><circle cx="23" cy="11" r="4"/><path d="M13 18l6-4"/></svg></span>
+      <div><b>Intervalos</b><span>Dos notas: ¿la segunda está alta o baja? 3 vidas.</span></div><i>›</i></button>
+    <button class="mode" data-go="afinar"><span class="ico"><svg viewBox="0 0 32 32"><path d="M4 12h20a4 4 0 0 1 0 8H4"/><path d="M10 8v16"/></svg></span>
+      <div><b>Afinar nota</b><span>Suena la referencia y ajustas tu nota con la vara.</span></div><i>›</i></button>
+  </div>
+  <div class="sect">Sección</div>
+  <div class="modes">
+    <button class="mode" data-go="acordes"><span class="ico"><svg viewBox="0 0 32 32"><path d="M8 26V12M16 26V6M24 26V15"/></svg></span>
       <div><b>Construir acorde</b><span>3 o 4 voces que se desafinan solas. Empástalas.</span></div><i>›</i></button>
-    <button class="mode" data-go="embocadura">
-      <svg viewBox="50 20 100 160"><path d="M72 36 Q72 30 78 30 H122 Q128 30 128 36 V38 C128 42 126 44 123 46 C118 50 115.5 57 112.5 67 C110.5 73 110 79 110 85 L107.5 161 Q107.5 166 103 166 H97 Q92.5 166 92.5 161 L90 85 C90 79 89.5 73 87.5 67 C84.5 57 82 50 77 46 C74 44 72 42 72 38 Z" fill="url(#silverG)" transform="rotate(-28 100 100)"/></svg>
-      <div><b>Embocadura</b><span>Retira, coloca, respira… la nota aparece medio tiempo antes de tocarla.</span></div><i>›</i></button>
+    <button class="mode" data-go="embocadura"><span class="ico"><svg viewBox="0 0 32 32"><path d="M7 5h18v4h-3c-2 2-3 5-4 7v11h-4V16c-1-2-2-5-4-7H7z"/></svg></span>
+      <div><b>Embocadura</b><span>Retira, coloca, respira y toca. Estilo Popers.</span></div><i>›</i></button>
   </div>
   <p class="best" id="bests"></p>
 </section>
 
 <!-- INTERVALOS -->
 <section class="view" id="v-intervalos">
-  <div class="hud"><div class="lives" id="iL"></div><div class="score"><b id="iS">0</b><small>puntos</small></div></div>
+  <div class="mhead"><button class="bk" data-home aria-label="Volver">←</button><h2>Intervalos</h2><div class="score"><b id="iS">0</b><small>puntos</small></div></div>
   <div class="stage">
-    <div class="dots"><div class="dot" id="d1"><em>1</em></div><div class="arrow" id="iArr">→</div><div class="dot" id="d2"><em>2</em></div></div>
-    <div class="q" id="iq">Escucha las dos notas.</div>
-    <div class="fb" id="ifb"></div>
+    <div class="top"><div class="lives" id="iL"></div><div class="info">3 vidas</div></div>
+    <div class="mid">
+      <div class="dots"><div class="dot" id="d1"><em>1</em></div><div class="arrow" id="iArr">→</div><div class="dot" id="d2"><em>2</em></div></div>
+      <div class="q" id="iq">Escucha las dos notas.</div>
+      <div class="fb" id="ifb"></div>
+    </div>
     <div class="meter"><div class="lab"><span>Diferencia</span><b id="iD">50 ¢</b></div><div class="bar"><div id="iBar"></div></div></div>
-    <div class="over on" id="iO"><h2 id="iOt">Intervalos</h2><p id="iOp">Cada acierto acerca un poco más las notas. Fallar te cuesta una boquilla.</p><button class="gold big" id="iGo">Empezar</button></div>
+    <div class="over on" id="iO"><h2 id="iOt">Intervalos</h2><p id="iOp">Cada acierto acerca un poco más las notas. Fallar te cuesta una boquilla.</p><button class="pri big" id="iGo">Empezar</button></div>
   </div>
-  <div class="cap">Intervalo (afinación temperada)</div>
-  <div class="chips" id="iChips"></div>
-  <div class="row"><button class="big" id="iLo" disabled>↓ Más bajo</button><button class="big" id="iHi" disabled>↑ Más alto</button></div>
-  <button class="full" id="iRep" disabled>Repetir las dos notas</button>
+  <div class="actions">
+    <div class="row"><button class="big" id="iLo" disabled>↓ Más baja</button><button class="big" id="iHi" disabled>↑ Más alta</button></div>
+    <button id="iRep" disabled>Repetir las dos notas</button>
+  </div>
+  <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><div class="lab">Intervalo (afinación temperada)</div><div class="chips" id="iChips"></div></div>
+  </div>
 </section>
 
 <!-- AFINAR -->
 <section class="view" id="v-afinar">
-  <div class="hud"><div class="lives" id="tL"></div><div class="score"><b id="tS">0</b><small id="tInfo">ronda 1</small></div></div>
+  <div class="mhead"><button class="bk" data-home aria-label="Volver">←</button><h2>Afinar nota</h2><div class="score"><b id="tS">0</b><small>puntos</small></div></div>
   <div class="stage">
-    <div class="q" id="tq">Suena la referencia; luego tu nota, desafinada. Arrastra la vara hasta que coincidan.</div>
-    <div class="slide" id="slide" tabindex="0" aria-label="Vara de afinación">
-      <svg viewBox="0 0 300 66"><rect x="0" y="6" width="250" height="12" rx="6" fill="url(#brassG)"/><rect x="0" y="48" width="250" height="12" rx="6" fill="url(#brassG)"/><path d="M250 12 a21 21 0 0 1 0 42" fill="none" stroke="url(#brassG)" stroke-width="12"/><rect x="40" y="2" width="10" height="62" rx="3" fill="#a8741f"/></svg>
+    <div class="top"><div class="lives" id="tL"></div><div class="info" id="tInfo">ronda 1</div></div>
+    <div class="mid">
+      <div class="q" id="tq">Suena la referencia; luego tu nota, desafinada.</div>
+      <div class="slide" id="slide" tabindex="0" aria-label="Vara de afinación">
+        <svg viewBox="0 0 300 66"><rect x="0" y="6" width="250" height="12" rx="6" fill="url(#chrome)"/><rect x="0" y="48" width="250" height="12" rx="6" fill="url(#chrome)"/><path d="M250 12 a21 21 0 0 1 0 42" fill="none" stroke="#cfd6df" stroke-width="12"/><rect x="40" y="2" width="10" height="62" rx="3" fill="#8fb8ff"/></svg>
+      </div>
+      <div class="fine"><button id="tM">−1 ¢</button><span>grave · agudo</span><button id="tP">+1 ¢</button></div>
+      <div class="gauge" id="gauge"><div class="sc"></div><div class="ok" id="gOk"></div><div class="nd" id="gN"></div><span style="left:0">−50</span><span style="left:50%">0</span><span style="left:100%">+50</span></div>
+      <div class="fb" id="tfb"></div>
     </div>
-    <div class="fine"><button id="tM">−1 ¢</button><span class="cap" style="margin:0">Más grave · Más agudo</span><button id="tP">+1 ¢</button></div>
-    <div class="gauge" id="gauge"><div class="sc"></div><div class="ok" id="gOk"></div><div class="nd" id="gN"></div><span style="left:0">−50</span><span style="left:50%">0</span><span style="left:100%">+50</span></div>
-    <div class="fb" id="tfb"></div>
-    <div class="over on" id="tO"><h2 id="tOt">Afinar nota</h2><p id="tOp">La tolerancia se estrecha cada ronda. 3 vidas.</p><button class="gold big" id="tGo">Empezar</button></div>
+    <div class="over on" id="tO"><h2 id="tOt">Afinar nota</h2><p id="tOp">Arrastra la vara hasta que tu nota coincida. La tolerancia se estrecha cada ronda. 3 vidas.</p><button class="pri big" id="tGo">Empezar</button></div>
   </div>
-  <label class="toggle"><input type="checkbox" id="hold"> Mantener la referencia sonando (más fácil, se oyen los batidos)</label>
-  <div class="row"><button id="tRef" disabled>Escuchar referencia</button><button class="gold" id="tFix" disabled>Fijar</button></div>
+  <div class="actions"><div class="row"><button class="big" id="tRef" disabled>Referencia</button><button class="pri big" id="tFix" disabled>Fijar</button></div></div>
+  <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><label class="toggle"><input type="checkbox" id="hold"> Mantener la referencia sonando (más fácil, mitad de puntos)</label></div>
+  </div>
 </section>
 
 <!-- ACORDES -->
 <section class="view" id="v-acordes">
-  <div class="hud"><div><b class="chname" id="cN">—</b></div><div class="score"><b id="cS">0</b><small id="cInfo">nivel 1</small></div></div>
+  <div class="mhead"><button class="bk" data-home aria-label="Volver">←</button><h2>Construir acorde</h2><div class="score"><b id="cS">0</b><small>puntos</small></div></div>
   <div class="stage">
+    <div class="top"><b class="chname" id="cN">—</b><div class="info" id="cInfo">nivel 1</div></div>
     <div class="bars" id="bars"></div>
-    <div class="lock"><div class="meter"><div class="lab"><span id="cMsg">Mantén el acorde empastado</span><b id="cT">0,0 s</b></div><div class="bar"><div id="cBar"></div></div></div></div>
-    <div class="over on" id="cO"><h2>Construir acorde</h2><p>Cada voz se mueve sola. Arrastra las barras arriba o abajo hasta que el acorde deje de batir.</p><button class="gold big" id="cGo">Empezar</button></div>
+    <div class="meter"><div class="lab"><span id="cMsg">Mantén el acorde empastado</span><b id="cT">0 s</b></div><div class="bar"><div id="cBar"></div></div></div>
+    <div class="over on" id="cO"><h2>Construir acorde</h2><p>Cada voz se mueve sola. Arrastra las barras arriba o abajo hasta que el acorde deje de batir.</p><button class="pri big" id="cGo">Empezar</button></div>
   </div>
-  <div class="cap">Acordes</div>
-  <div class="chips" id="cSet"></div>
-  <div class="cap">Afinación objetivo</div>
-  <div class="chips" id="cTun"></div>
-  <label class="toggle"><input type="checkbox" id="help"> Ayuda visual (colorea cada voz según su desvío)</label>
-  <button class="full" id="cStop" disabled>Parar</button>
+  <div class="actions"><button id="cStop" disabled>Parar</button></div>
+  <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><div class="lab">Acordes</div><div class="chips" id="cSet"></div></div>
+    <div class="set"><div class="lab">Afinación objetivo</div><div class="chips" id="cTun"></div></div>
+    <div class="set"><label class="toggle"><input type="checkbox" id="help"> Ayuda visual (colorea cada voz según su desvío)</label></div>
+  </div>
 </section>
+
 <!-- EMBOCADURA -->
 <section class="view" id="v-embocadura">
-  <div class="hud"><div><b class="chname" id="eB">72</b> <small class="cap">BPM</small></div><div class="score"><b id="eC">0</b><small>notas</small></div></div>
+  <div class="mhead"><button class="bk" data-home aria-label="Volver">←</button><h2>Embocadura</h2><div class="score"><b id="eC">0</b><small>notas</small></div></div>
   <div class="stage">
+    <div class="top"><div class="info" style="text-align:left"><b id="eB" style="color:#fff;font-size:20px">72</b> BPM</div><div class="info">4 tiempos</div></div>
     <div class="beats" id="beats"></div>
-    <svg class="staff" id="staff" viewBox="0 0 320 150" aria-label="Pentagrama"></svg>
-    <div class="nname hid" id="eN">?</div>
-    <div class="cap" id="eHint" style="margin:0">Embocadura firme todo el ejercicio.</div>
+    <div class="mid">
+      <svg class="staff" id="staff" viewBox="0 0 320 150" aria-label="Pentagrama"></svg>
+      <div class="nname hid" id="eN">?</div>
+      <p class="hint" id="eHint">Embocadura firme todo el ejercicio.</p>
+    </div>
   </div>
-  <div class="cap">Tempo: <b id="eBpm">72</b> BPM</div>
-  <input type="range" id="eTempo" min="40" max="160" value="72" aria-label="Tempo">
-  <div class="cap">Registro (notas escritas)</div>
-  <div class="chips" id="eRange"></div>
-  <div class="cap">Lectura</div>
-  <div class="chips" id="eNot"></div>
-  <label class="toggle"><input type="checkbox" id="eRef" checked> Que suene la nota de referencia (ideal con la boquilla sola)</label>
-  <label class="toggle"><input type="checkbox" id="eClick" checked> Metrónomo</label>
-  <button class="gold big full" id="eGo">Empezar</button>
+  <div class="actions"><button class="pri big" id="eGo">Empezar</button></div>
+  <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><div class="lab">Tempo: <span id="eBpm">72</span> BPM</div><input type="range" id="eTempo" min="40" max="160" value="72" aria-label="Tempo"></div>
+    <div class="set"><div class="lab">Registro (notas escritas)</div><div class="chips" id="eRange"></div></div>
+    <div class="set"><div class="lab">Lectura</div><div class="chips" id="eNot"></div></div>
+    <div class="set"><label class="toggle"><input type="checkbox" id="eRef" checked> Que suene la nota de referencia</label><label class="toggle"><input type="checkbox" id="eClick" checked> Metrónomo</label></div>
+  </div>
 </section>
 </div>
 
@@ -281,15 +302,15 @@ $('#timbre').onchange=e=>{timbre=e.target.value;store.set('timbre',timbre)};
 const st=(()=>{try{return localStorage.getItem('ingroup-timbre')}catch(e){}})();if(st&&TIM[st]){timbre=st;$('#timbre').value=st}
 
 /* ---------- vidas ---------- */
-const MP='<svg viewBox="60 20 80 160"><path d="M72 36 Q72 30 78 30 H122 Q128 30 128 36 V38 C128 42 126 44 123 46 C118 50 115.5 57 112.5 67 C110.5 73 110 79 110 85 L107.5 161 Q107.5 166 103 166 H97 Q92.5 166 92.5 161 L90 85 C90 79 89.5 73 87.5 67 C84.5 57 82 50 77 46 C74 44 72 42 72 38 Z"/></svg>';
+const MP='<svg viewBox="0 0 100 300"><path d="M50 10H89Q95 10 95 16V37Q95 43 89 43H84C84 66 72 86 63 90V103L66 104Q68 105 68 107.5Q68 110 66 111L65 112.5L66 114Q68 115 68 116.5Q68 118.5 66 119.5L65 121V154L66 158L60.7 290Q60.7 292 58.7 292H41.3Q39.3 292 39.3 290L34 158L35 154V121L34 119.5Q32 118.5 32 116.5Q32 115 34 114L35 112.5L34 111Q32 110 32 107.5Q32 105 34 104L37 103V90C28 86 16 66 16 43H11Q5 43 5 37V16Q5 10 11 10Z"/></svg>';
 const drawLives=(el,n)=>el.innerHTML=[0,1,2].map(i=>`<span class="life${i<n?'':' lost'}">${MP}</span>`).join('');
 
 /* ---------- navegación ---------- */
 const VIEWS=['intervalos','afinar','acordes','embocadura'];
 function route(){const h=location.hash.slice(1),v=VIEWS.includes(h)?h:'home';stopAll();
-  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));$('#back').hidden=v==='home';document.body.classList.toggle('inmode',v!=='home');if(v==='home')bests();scrollTo(0,0)}
+  document.querySelectorAll('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));if(v==='home')bests();scrollTo(0,0)}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{ac();location.hash=b.dataset.go});
-$('#back').onclick=()=>location.hash='';addEventListener('hashchange',route);
+document.querySelectorAll('[data-home]').forEach(b=>b.onclick=()=>location.hash='');addEventListener('hashchange',route);
 function bests(){const a=store.get('int'),b=store.get('tune'),c=store.get('chord');$('#bests').textContent=(a||b||c)?`Récords · Intervalos ${a} · Afinar ${b} · Acordes ${c}`:''}
 function stopAll(){clearTimers();tStopVoices();cStop(true);eStop()}
 function chips(el,list,sel,cb){el.innerHTML=list.map((x,i)=>`<button class="chip" aria-pressed="${i===sel}" data-i="${i}">${x[0]}</button>`).join('');
@@ -392,14 +413,14 @@ let eRI=0,eNI=0;chips($('#eRange'),RANGES,0,i=>eRI=i);chips($('#eNot'),NOTS,0,i=
 const E={on:false,bpm:72,next:0,beat:1,iv:0,w:null,count:0};
 $('#beats').innerHTML=LAB.map((l,i)=>`<div class="beat${i?'':' play'}"><b>${l[0]}</b><span>${l[1]}</span></div>`).join('');
 const STEP=[[0,''],[0,'♯'],[1,''],[2,'♭'],[2,''],[3,''],[3,'♯'],[4,''],[5,'♭'],[5,''],[6,'♭'],[6,'']];
-function staff(m){const H=7,bot=104,x=190;let g='';for(let i=0;i<5;i++)g+=`<line x1="20" x2="300" y1="${bot-i*2*H}" y2="${bot-i*2*H}" stroke="#cbb7a0" stroke-opacity=".6" stroke-width="1.5"/>`;
-  g+=`<text x="26" y="${bot+8}" font-size="92" fill="#e9c46a" font-family="serif">𝄞</text>`;
+function staff(m){const H=7,bot=104,x=190;let g='';for(let i=0;i<5;i++)g+=`<line x1="20" x2="300" y1="${bot-i*2*H}" y2="${bot-i*2*H}" stroke="#9db0c8" stroke-opacity=".6" stroke-width="1.5"/>`;
+  g+=`<text x="26" y="${bot+8}" font-size="92" fill="#dfe5ec" font-family="serif">𝄞</text>`;
   if(m!=null){const[st,acc]=STEP[m%12],d=(Math.floor(m/12)-1)*7+st,y=bot-(d-30)*H;
-    for(let L=28;L>=d;L-=2)g+=`<line x1="${x-20}" x2="${x+20}" y1="${bot-(L-30)*H}" y2="${bot-(L-30)*H}" stroke="#cbb7a0" stroke-width="1.5"/>`;
-    for(let L=40;L<=d;L+=2)g+=`<line x1="${x-20}" x2="${x+20}" y1="${bot-(L-30)*H}" y2="${bot-(L-30)*H}" stroke="#cbb7a0" stroke-width="1.5"/>`;
-    g+=`<ellipse cx="${x}" cy="${y}" rx="10" ry="7.2" transform="rotate(-20 ${x} ${y})" fill="#fbe7a8"/>`;
-    const up=d<34;g+=up?`<line x1="${x+9}" x2="${x+9}" y1="${y-2}" y2="${y-48}" stroke="#fbe7a8" stroke-width="2.4"/>`:`<line x1="${x-9}" x2="${x-9}" y1="${y+2}" y2="${y+48}" stroke="#fbe7a8" stroke-width="2.4"/>`;
-    if(acc)g+=`<text x="${x-34}" y="${y+9}" font-size="28" fill="#fbe7a8">${acc}</text>`}
+    for(let L=28;L>=d;L-=2)g+=`<line x1="${x-20}" x2="${x+20}" y1="${bot-(L-30)*H}" y2="${bot-(L-30)*H}" stroke="#9db0c8" stroke-width="1.5"/>`;
+    for(let L=40;L<=d;L+=2)g+=`<line x1="${x-20}" x2="${x+20}" y1="${bot-(L-30)*H}" y2="${bot-(L-30)*H}" stroke="#9db0c8" stroke-width="1.5"/>`;
+    g+=`<ellipse cx="${x}" cy="${y}" rx="10" ry="7.2" transform="rotate(-20 ${x} ${y})" fill="#f7f9fc"/>`;
+    const up=d<34;g+=up?`<line x1="${x+9}" x2="${x+9}" y1="${y-2}" y2="${y-48}" stroke="#f7f9fc" stroke-width="2.4"/>`:`<line x1="${x-9}" x2="${x-9}" y1="${y+2}" y2="${y+48}" stroke="#f7f9fc" stroke-width="2.4"/>`;
+    if(acc)g+=`<text x="${x-34}" y="${y+9}" font-size="28" fill="#f7f9fc">${acc}</text>`}
   $('#staff').innerHTML=g}
 function click(t,acc){if(!$('#eClick').checked)return;const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=acc?1600:1000;
   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(acc?.18:.1,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.04);o.connect(g);g.connect(master);o.start(t);o.stop(t+.05)}
@@ -413,8 +434,8 @@ function eSched(beat,t){const spb=60/E.bpm;click(t,beat===0);at(t,()=>{lit(beat)
   if(beat===3){const ta=t+spb/2,n=pick();at(ta,()=>{E.w=n;staff(n.w);$('#eN').textContent=NOTES[n.w%12]+' '+(Math.floor(n.w/12)-1);$('#eN').classList.remove('hid')});
     if($('#eRef').checked)later(()=>{const v=voice(mf(n.c),.2);later(()=>v.stop(.05),spb*500*.9)},Math.max(0,(ta-AC.currentTime)*1000))}}
 function eTick(){while(E.next<AC.currentTime+.12){eSched(E.beat,E.next);E.next+=60/E.bpm;E.beat=(E.beat+1)%4}}
-function eStart(){ac();E.on=true;E.beat=1;E.count=0;E.w=null;$('#eC').textContent=0;E.next=AC.currentTime+.2;E.iv=setInterval(eTick,25);$('#eGo').textContent='Parar';$('#eGo').classList.remove('gold')}
-function eStop(){if(!E.on)return;E.on=false;clearInterval(E.iv);lit(-1);$('#eGo').textContent='Empezar';$('#eGo').classList.add('gold');$('#eN').classList.add('hid');$('#eN').textContent='?';staff(null)}
+function eStart(){ac();E.on=true;E.beat=1;E.count=0;E.w=null;$('#eC').textContent=0;E.next=AC.currentTime+.2;E.iv=setInterval(eTick,25);$('#eGo').textContent='Parar';$('#eGo').classList.remove('pri')}
+function eStop(){if(!E.on)return;E.on=false;clearInterval(E.iv);lit(-1);$('#eGo').textContent='Empezar';$('#eGo').classList.add('pri');$('#eN').classList.add('hid');$('#eN').textContent='?';staff(null)}
 $('#eGo').onclick=()=>E.on?(clearTimers(),eStop()):eStart();
 $('#eTempo').oninput=e=>{E.bpm=+e.target.value;$('#eBpm').textContent=E.bpm;$('#eB').textContent=E.bpm};
 staff(null);
