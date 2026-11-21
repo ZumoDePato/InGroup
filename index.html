@@ -114,6 +114,9 @@ input[type=range]{width:100%;accent-color:var(--acc);height:44px}
 .track .hd.g{box-shadow:0 0 0 3px var(--ok),0 6px 14px rgba(0,0,0,.45)}
 .track .hd.y{box-shadow:0 0 0 3px #f2c14e,0 6px 14px rgba(0,0,0,.45)}
 .track .hd.r{box-shadow:0 0 0 3px var(--bad),0 6px 14px rgba(0,0,0,.45)}
+.voice{display:grid;gap:6px}.voice .vv{height:32px}.track.off{opacity:.3}.track.lk .hd{background:linear-gradient(180deg,#d9f5ec,#8fd9c1);cursor:default}
+.guide{width:100%;border-collapse:collapse;font-size:14px}.guide td{padding:6px 0;border-bottom:1px solid var(--line)}.guide td:nth-child(2){color:var(--mute)}.guide td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.beat.ci{border-color:var(--acc);box-shadow:inset 0 0 0 2px var(--acc)}
 .track b{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:12px;color:var(--mute);font-weight:500}
 /* embocadura */
 .beats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%}
@@ -206,6 +209,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:44px}
     <button id="iRep" disabled>Repetir las dos notas</button>
   </div>
   <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><div class="lab">Volumen</div><input type="range" class="mvol" min="0" max="100" aria-label="Volumen general"></div>
     <div class="set"><div class="lab">Intervalo (afinación temperada)</div><div class="chips" id="iChips"></div></div>
   </div>
 </section>
@@ -228,6 +232,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:44px}
   </div>
   <div class="actions"><div class="row"><button class="big" id="tRef" disabled>Referencia</button><button class="pri big" id="tFix" disabled>Fijar</button></div></div>
   <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><div class="lab">Volumen</div><input type="range" class="mvol" min="0" max="100" aria-label="Volumen general"></div>
     <div class="set"><label class="toggle"><input type="checkbox" id="hold"> Mantener la referencia sonando (más fácil, mitad de puntos)</label></div>
   </div>
 </section>
@@ -243,9 +248,15 @@ input[type=range]{width:100%;accent-color:var(--acc);height:44px}
   </div>
   <div class="actions"><button id="cStop" disabled>Parar</button></div>
   <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><div class="lab">Volumen</div><input type="range" class="mvol" min="0" max="100" aria-label="Volumen general"></div>
+    <div class="set"><div class="lab">Cómo se construye</div><div class="chips" id="cMode"></div><p class="hint" style="margin-top:8px">Paso a paso: suena la fundamental, luego entra la 5ª, después la 3ª y por último la 7ª. Cada voz se fija al afinarla.</p></div>
+    <div class="set"><label class="toggle"><input type="checkbox" id="cPre" checked> Escuchar el acorde afinado antes de construirlo</label></div>
     <div class="set"><div class="lab">Acordes</div><div class="chips" id="cSet"></div></div>
     <div class="set"><div class="lab">Afinación objetivo</div><div class="chips" id="cTun"></div></div>
     <div class="set"><label class="toggle"><input type="checkbox" id="help"> Ayuda visual (colorea cada voz según su desvío)</label></div>
+    <div class="set"><div class="lab">Guía de afinación justa</div>
+      <table class="guide"><tr><td>3ª mayor</td><td>un pelo baja</td><td>−14 ¢</td></tr><tr><td>3ª menor</td><td>un pelo alta</td><td>+16 ¢</td></tr><tr><td>5ª justa</td><td>un poquito alta</td><td>+2 ¢</td></tr><tr><td>7ª menor</td><td>bastante baja</td><td>−31 ¢</td></tr><tr><td>7ª mayor</td><td>baja</td><td>−12 ¢</td></tr></table>
+      <p class="hint" style="margin-top:8px">Equilibrio de volumen: fundamental más fuerte, luego 5ª, y 3ª y 7ª más suaves. Ajústalo con el control bajo cada barra.</p></div>
   </div>
 </section>
 
@@ -263,7 +274,9 @@ input[type=range]{width:100%;accent-color:var(--acc);height:44px}
   </div>
   <div class="actions"><button class="pri big" id="eGo">Empezar</button></div>
   <div class="settings"><h3>Ajustes</h3>
+    <div class="set"><div class="lab">Volumen</div><input type="range" class="mvol" min="0" max="100" aria-label="Volumen general"></div>
     <div class="set"><div class="lab">Tempo: <span id="eBpm">72</span> BPM</div><input type="range" id="eTempo" min="40" max="160" value="72" aria-label="Tempo"></div>
+    <div class="set"><div class="lab">La nota aparece y suena</div><div class="chips" id="eLead"></div></div>
     <div class="set"><div class="lab">Registro (notas escritas)</div><div class="chips" id="eRange"></div></div>
     <div class="set"><div class="lab">Lectura</div><div class="chips" id="eNot"></div></div>
     <div class="set"><label class="toggle"><input type="checkbox" id="eRef" checked> Que suene la nota de referencia</label><label class="toggle"><input type="checkbox" id="eClick" checked> Metrónomo</label></div>
@@ -287,17 +300,28 @@ const TIM={
   trombon:{h:[1,.88,.72,.56,.42,.3,.2,.13,.08],cut:[600,3400],q:1.4},
   trompa:{h:[1,.5,.28,.14,.07,.035],cut:[500,1700],q:.7},
   puro:{h:[1],cut:[14000,14000],q:.1}};
-function ac(){if(!AC){AC=new(window.AudioContext||window.webkitAudioContext)();const comp=AC.createDynamicsCompressor();master=AC.createGain();master.gain.value=.55;master.connect(comp);comp.connect(AC.destination)}if(AC.state==='suspended')AC.resume();return AC}
+let unlocked=false,mvol=(()=>{try{const v=localStorage.getItem('ingroup-vol');return v==null?.85:+v}catch(e){return .85}})();
+function ac(){if(!AC){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+    AC=new(window.AudioContext||window.webkitAudioContext)();const comp=AC.createDynamicsCompressor();master=AC.createGain();master.gain.value=mvol;master.connect(comp);comp.connect(AC.destination)}
+  if(!unlocked){unlocked=true;try{const a=new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA');a.loop=true;a.setAttribute('playsinline','');a.play().catch(()=>{})}catch(e){}
+    try{const b=AC.createBuffer(1,1,22050),src=AC.createBufferSource();src.buffer=b;src.connect(AC.destination);src.start(0)}catch(e){}}
+  if(AC.state!=='running')AC.resume();return AC}
+function setVol(v){mvol=v;if(master)master.gain.setTargetAtTime(v,AC.currentTime,.05);try{localStorage.setItem('ingroup-vol',v)}catch(e){}document.querySelectorAll('.mvol').forEach(r=>r.value=Math.round(v*100))}
+document.addEventListener('pointerdown',()=>ac(),{once:true});
+function noteAt(f,t0,dur,vol=.26){ac();const T=TIM[timbre],o=AC.createOscillator(),fl=AC.createBiquadFilter(),g=AC.createGain();
+  o.setPeriodicWave(wave());o.frequency.value=f;fl.type='lowpass';fl.Q.value=T.q;fl.frequency.setValueAtTime(T.cut[0],t0);fl.frequency.linearRampToValueAtTime(T.cut[1],t0+.08);
+  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+.04);g.gain.setTargetAtTime(vol*.8,t0+.05,.15);g.gain.setValueAtTime(vol*.8,t0+Math.max(.06,dur-.08));g.gain.linearRampToValueAtTime(0,t0+dur);
+  o.connect(fl);fl.connect(g);g.connect(master);o.start(t0);o.stop(t0+dur+.05)}
 function wave(){if(!waves[timbre]){const h=TIM[timbre].h,re=new Float32Array(h.length+1),im=new Float32Array(h.length+1);h.forEach((a,i)=>im[i+1]=a);waves[timbre]=AC.createPeriodicWave(re,im)}return waves[timbre]}
 function voice(f,vol=.22){ac();const t=AC.currentTime,T=TIM[timbre],o=AC.createOscillator(),fl=AC.createBiquadFilter(),g=AC.createGain();
   o.setPeriodicWave(wave());o.frequency.value=f;fl.type='lowpass';fl.Q.value=T.q;
   fl.frequency.setValueAtTime(T.cut[0],t);fl.frequency.linearRampToValueAtTime(T.cut[1],t+.09);fl.frequency.setTargetAtTime(T.cut[1]*.72,t+.1,.3);
   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.05);g.gain.setTargetAtTime(vol*.8,t+.06,.15);
   o.connect(fl);fl.connect(g);g.connect(master);o.start(t);let dead=false;
-  return{set(nf){if(!dead)o.frequency.setTargetAtTime(nf,AC.currentTime,.03)},stop(r=.12){if(dead)return;dead=true;const n=AC.currentTime;g.gain.cancelScheduledValues(n);g.gain.setValueAtTime(g.gain.value,n);g.gain.linearRampToValueAtTime(0,n+r);o.stop(n+r+.05)}}}
+  return{set(nf){if(!dead)o.frequency.setTargetAtTime(nf,AC.currentTime,.03)},vol(x){if(dead)return;const n=AC.currentTime;g.gain.cancelScheduledValues(n);g.gain.setValueAtTime(g.gain.value,n);g.gain.setTargetAtTime(x,n,.06)},stop(r=.12){if(dead)return;dead=true;const n=AC.currentTime;g.gain.cancelScheduledValues(n);g.gain.setValueAtTime(g.gain.value,n);g.gain.linearRampToValueAtTime(0,n+r);o.stop(n+r+.05)}}}
 const timers=[];const later=(fn,ms)=>timers.push(setTimeout(fn,ms));
 function clearTimers(){while(timers.length)clearTimeout(timers.pop())}
-function note(f,at,dur,el){later(()=>{const v=voice(f);el&&el.classList.add('play');later(()=>{v.stop();el&&el.classList.remove('play')},dur*1000)},at*1000)}
+function note(f,at,dur,el){ac();const t0=AC.currentTime+.05+at;noteAt(f,t0,dur);later(()=>el&&el.classList.add('play'),at*1000+50);later(()=>el&&el.classList.remove('play'),(at+dur)*1000+50)}
 $('#timbre').onchange=e=>{timbre=e.target.value;store.set('timbre',timbre)};
 const st=(()=>{try{return localStorage.getItem('ingroup-timbre')}catch(e){}})();if(st&&TIM[st]){timbre=st;$('#timbre').value=st}
 
@@ -372,44 +396,60 @@ drawLives($('#tL'),3);
 /* ---------- MODO 3: construir acorde ---------- */
 const CH={maj:['',[0,4,7]],min:['m',[0,3,7]],dom7:['7',[0,4,7,10]],maj7:['maj7',[0,4,7,11]],m7:['m7',[0,3,7,10]]};
 const SETS=[['Tríadas',['maj','min']],['Cuatriadas',['dom7','maj7','m7']],['Mezcla',['maj','min','dom7','maj7','m7']]];
-const TUNS=[['Justa (en grupo)',1],['Temperada',0]];
-const JUST={0:0,3:15.6,4:-13.7,7:2,10:-31.2,11:-11.7},ROLE={0:'Fund.',3:'3ª',4:'3ª',7:'5ª',10:'7ª',11:'7ª'};
-let cSetI=0,cTunI=0;chips($('#cSet'),SETS,0,i=>cSetI=i);chips($('#cTun'),TUNS,0,i=>cTunI=i);
-const C={on:false,level:1,score:0,vs:[],hold:0,raf:0,t0:0,last:0,lockT:0};
-const CPX=2.8, ctol=()=>Math.max(4,8-(C.level-1)*.4);
+const TUNS=[['Justa (en grupo)',1],['Temperada',0]],CMODES=[['Paso a paso'],['Todas a la vez']];
+const JUST={0:0,3:15.6,4:-13.7,7:2,10:-31.2,11:-11.7},ROLE={0:'Fund.',3:'3ª m',4:'3ª M',7:'5ª',10:'7ª m',11:'7ª M'};
+const VOLD={0:1,7:.85,3:.7,4:.7,10:.65,11:.65},ORD={0:0,7:1,3:2,4:2,10:3,11:3};
+let cSetI=0,cTunI=0,cModeI=0;chips($('#cSet'),SETS,0,i=>cSetI=i);chips($('#cTun'),TUNS,0,i=>cTunI=i);chips($('#cMode'),CMODES,0,i=>cModeI=i);
+const C={on:false,level:1,score:0,vs:[],hold:0,raf:0,t0:0,last:0,lockT:0,pre:0,step:99};
+const CPX=2.8,ctol=()=>Math.max(4,8-(C.level-1)*.4),sg=x=>(x>0?'+':x<0?'−':'')+Math.abs(Math.round(x));
 function cHud(){$('#cS').textContent=C.score;$('#cInfo').textContent=`nivel ${C.level} · margen ±${fmt(ctol())} ¢`}
-function cNew(){C.vs.forEach(v=>v.v.stop());const ks=SETS[cSetI][1],k=ks[ri(0,ks.length-1)],[suf,iv]=CH[k],root=ri(48,55),just=TUNS[cTunI][1];
-  $('#cN').textContent=NOTES[root%12]+(suf?' '+suf:'');const amp=Math.min(9,1.5+C.level*.8),spread=Math.min(35,12+C.level*2.5);
-  C.vs=iv.map(s=>({s,f:cents(mf(root+s),just?JUST[s]:0),corr:0,off:(Math.random()<.5?-1:1)*rnd(spread*.4,spread),amp,w:rnd(.2,.5),ph:rnd(0,6.28)}));
-  C.vs.forEach(v=>v.v=voice(v.f,iv.length>3?.12:.15));
-  $('#bars').innerHTML=C.vs.map((v,i)=>`<div class="track" data-i="${i}" tabindex="0" aria-label="${ROLE[v.s]}"><b></b><div class="hd">${ROLE[v.s]}</div></div>`).join('');
-  C.hold=0;C.t0=performance.now();C.lockT=0;$('#cMsg').textContent='Mantén el acorde empastado';cHud()}
-function cLoop(now){if(!C.on)return;const dt=Math.min(.1,(now-C.last)/1000);C.last=now;const t=(now-C.t0)/1000;
-  const es=C.vs.map(v=>v.off+v.amp*Math.sin(v.w*t+v.ph)+v.corr),mean=es.reduce((a,b)=>a+b,0)/es.length,tl=ctol(),help=$('#help').checked;let all=true;
-  const tr=document.querySelectorAll('.track');
-  C.vs.forEach((v,i)=>{const rel=es[i]-mean;v.v.set(cents(v.f,es[i]));if(Math.abs(rel)>tl)all=false;const el=tr[i];if(!el)return;const hd=el.firstElementChild.nextElementSibling;
-    hd.style.transform=`translateY(${-v.corr*CPX}px)`;hd.className='hd'+(help?(Math.abs(rel)<=tl?' g':Math.abs(rel)<15?' y':' r'):'');
-    el.firstElementChild.textContent=help?(rel>0?'+':'')+Math.round(rel)+' ¢':''});
+function cNew(){C.vs.forEach(v=>v.v.stop());const ks=SETS[cSetI][1],k=ks[ri(0,ks.length-1)],[suf,iv]=CH[k],root=ri(55,62),just=TUNS[cTunI][1];
+  $('#cN').textContent=NOTES[root%12]+(suf?' '+suf:'');const amp=Math.min(9,1.5+C.level*.8),spread=Math.min(35,12+C.level*2.5);C.spread=spread;
+  C.vs=iv.map(s=>({s,f:cents(mf(root+s),just?JUST[s]:0),corr:0,off:(Math.random()<.5?-1:1)*rnd(spread*.4,spread),amp,w:rnd(.2,.5),ph:rnd(0,6.28),vol:VOLD[s],ord:ORD[s],lk:null,g:-1}));
+  C.vs.forEach(v=>v.v=voice(v.f,.0001));C.paso=cModeI===0;C.step=C.paso?2:99;
+  $('#bars').innerHTML=C.vs.map((v,i)=>`<div class="voice"><div class="track" data-i="${i}" tabindex="0" aria-label="${ROLE[v.s]}"><b></b><div class="hd">${ROLE[v.s]}</div></div><input class="vv" type="range" min="0" max="100" value="${v.vol*100}" data-i="${i}" aria-label="Volumen ${ROLE[v.s]}"></div>`).join('');
+  C.pre=$('#cPre').checked?2.4:0;C.hold=0;C.t0=performance.now();C.lockT=0;cHud()}
+function cLoop(now){if(!C.on)return;const dt=Math.min(.1,(now-C.last)/1000);C.last=now;const t=(now-C.t0)/1000,tl=ctol(),help=$('#help').checked,tr=document.querySelectorAll('.track'),just=TUNS[cTunI][1];
+  const pre=t<C.pre,tt=Math.max(0,t-C.pre),k=Math.min(1,tt/1.2);
+  const act=v=>pre||!C.paso||v.ord<C.step;
+  const es=C.vs.map(v=>pre?0:v.lk!=null?v.lk:k*(v.off+v.amp*Math.sin(v.w*tt+v.ph))+v.corr);
+  if(!pre&&C.paso){const r=C.vs.find(v=>v.ord===0);if(r.lk==null&&k>=1){r.lk=es[C.vs.indexOf(r)];cArm(1,r.lk,tt)}}
+  const ref=C.vs.map((v,i)=>[v,es[i]]).filter(([v])=>C.paso?v.lk!=null:act(v));const mean=ref.length?ref.reduce((a,[,e])=>a+e,0)/ref.length:0;
+  let all=true;
+  C.vs.forEach((v,i)=>{const on=act(v),gv=on?.2*v.vol:0;if(Math.abs(gv-v.g)>.001){v.v.vol(gv);v.g=gv}v.v.set(cents(v.f,es[i]));
+    const rel=es[i]-mean,cur=C.paso?(v.ord===C.step-1&&v.lk==null):on;if(cur&&Math.abs(rel)>tl)all=false;
+    const el=tr[i];if(!el)return;const hd=el.lastElementChild;el.classList.toggle('off',!on);el.classList.toggle('lk',v.lk!=null);
+    hd.style.transform=`translateY(${-v.corr*CPX}px)`;hd.className='hd'+(on&&!pre&&help&&v.lk==null?(Math.abs(rel)<=tl?' g':Math.abs(rel)<15?' y':' r'):'');
+    el.firstElementChild.textContent=v.lk!=null&&C.paso?'✓ fijada':on&&help&&!pre?sg(rel)+' ¢':just&&v.s?'obj. '+sg(JUST[v.s])+' ¢':''});
+  if(pre){$('#cMsg').textContent='Escucha el acorde afinado…';$('#cT').textContent='';$('#cBar').style.width=Math.min(100,t/C.pre*100)+'%';C.raf=requestAnimationFrame(cLoop);return}
   if(C.lockT){C.raf=requestAnimationFrame(cLoop);return}
-  C.hold=all?C.hold+dt:Math.max(0,C.hold-dt*2);const need=1.6;$('#cBar').style.width=Math.min(100,C.hold/need*100)+'%';$('#cT').textContent=fmt(Math.min(C.hold,need))+' s';
-  if(C.hold>=need){C.lockT=1;const secs=(now-C.t0)/1000,pts=Math.round(100*C.vs.length*(1+C.level*.25)*Math.max(.3,1-secs/60));C.score+=pts;
-    $('#cMsg').textContent=`¡Empastado! +${pts}`;later(()=>{if(!C.on)return;C.level++;cNew()},1300)}
+  const nv=C.vs.length,need=C.paso?1:1.6;
+  if(C.paso){const v=C.vs.find(v=>v.ord===C.step-1);$('#cMsg').textContent=v?`Afina la ${ROLE[v.s]} sobre lo fijado`:''}else $('#cMsg').textContent='Mantén el acorde empastado';
+  C.hold=all&&k>=1?C.hold+dt:Math.max(0,C.hold-dt*2);$('#cBar').style.width=Math.min(100,C.hold/need*100)+'%';$('#cT').textContent=fmt(Math.min(C.hold,need))+' s';
+  if(C.hold>=need){C.hold=0;
+    if(C.paso&&C.step<nv){const v=C.vs.find(v=>v.ord===C.step-1);v.lk=es[C.vs.indexOf(v)];const lks=C.vs.filter(x=>x.lk!=null);cArm(C.step,lks.reduce((a,x)=>a+x.lk,0)/lks.length,tt);C.step++}
+    else{if(C.paso){const v=C.vs.find(v=>v.ord===C.step-1);v.lk=es[C.vs.indexOf(v)]}
+      C.lockT=1;const secs=tt,pts=Math.round(100*nv*(1+C.level*.25)*Math.max(.3,1-secs/(C.paso?90:60)));C.score+=pts;
+      $('#cMsg').textContent=`¡Empastado! +${pts}`;later(()=>{if(!C.on)return;C.level++;cNew()},1800)}}
   C.raf=requestAnimationFrame(cLoop)}
+function cArm(ord,mean,tt){const v=C.vs.find(x=>x.ord===ord);if(!v)return;const sp=C.spread,lo=Math.max(2.5*ctol(),sp*.5);v.off=mean+(Math.random()<.5?-1:1)*rnd(lo,Math.max(lo+4,sp))-v.amp*Math.sin(v.w*tt+v.ph)-v.corr}
 function cStart(){ac();C.on=true;C.level=1;C.score=0;$('#cO').classList.remove('on');$('#cStop').disabled=false;cNew();C.last=performance.now();C.raf=requestAnimationFrame(cLoop)}
 function cStop(silent){if(!C.on)return;C.on=false;cancelAnimationFrame(C.raf);C.vs.forEach(v=>v.v&&v.v.stop());C.vs=[];$('#cStop').disabled=true;
   if(C.score>store.get('chord'))store.set('chord',C.score);if(!silent){$('#cO').querySelector('p').textContent=`${C.score} puntos · llegaste al nivel ${C.level}`;}$('#cO').querySelector('button').textContent='Otra vez';$('#cO').classList.add('on')}
 $('#cGo').onclick=cStart;$('#cStop').onclick=()=>cStop(false);
 {const box=$('#bars');let drag=null;
-  box.addEventListener('pointerdown',e=>{const tr=e.target.closest('.track');if(!tr||!C.on)return;const v=C.vs[+tr.dataset.i];drag={v,y0:e.clientY,c0:v.corr};tr.setPointerCapture(e.pointerId)});
+  box.addEventListener('input',e=>{if(!e.target.classList.contains('vv'))return;const v=C.vs[+e.target.dataset.i];if(v)v.vol=e.target.value/100});
+  box.addEventListener('pointerdown',e=>{const tr=e.target.closest('.track');if(!tr||!C.on)return;const v=C.vs[+tr.dataset.i];if(v.lk!=null)return;drag={v,y0:e.clientY,c0:v.corr};tr.setPointerCapture(e.pointerId)});
   box.addEventListener('pointermove',e=>{if(!drag)return;drag.v.corr=Math.max(-50,Math.min(50,drag.c0-(e.clientY-drag.y0)/CPX))});
   const up=()=>drag=null;box.addEventListener('pointerup',up);box.addEventListener('pointercancel',up);
-  box.addEventListener('keydown',e=>{const tr=e.target.closest('.track');if(!tr||!C.on)return;const v=C.vs[+tr.dataset.i];if(e.key==='ArrowUp'){v.corr=Math.min(50,v.corr+1);e.preventDefault()}if(e.key==='ArrowDown'){v.corr=Math.max(-50,v.corr-1);e.preventDefault()}})}
+  box.addEventListener('keydown',e=>{const tr=e.target.closest('.track');if(!tr||!C.on)return;const v=C.vs[+tr.dataset.i];if(v.lk!=null)return;if(e.key==='ArrowUp'){v.corr=Math.min(50,v.corr+1);e.preventDefault()}if(e.key==='ArrowDown'){v.corr=Math.max(-50,v.corr-1);e.preventDefault()}})}
 
 /* ---------- MODO 4: embocadura (estilo Popers) ---------- */
 const RANGES=[['Medio (Do4–Do5)',[60,72]],['Grave (Fa♯3–Sol4)',[54,67]],['Agudo (Sol4–Sol5)',[67,79]],['Todo (Fa♯3–Do6)',[54,84]]];
 const NOTS=[['Trompeta en Si♭',2],['Concierto (Do)',0]];
 const LAB=[['1','¡Toca!'],['2','Retira'],['3','Coloca'],['4','Respira']];
-let eRI=0,eNI=0;chips($('#eRange'),RANGES,0,i=>eRI=i);chips($('#eNot'),NOTS,0,i=>eNI=i);
+const LEADS=[['½ tiempo antes',.5],['1 tiempo antes',1]];
+let eRI=0,eNI=0,eLI=0;chips($('#eRange'),RANGES,0,i=>eRI=i);chips($('#eNot'),NOTS,0,i=>eNI=i);chips($('#eLead'),LEADS,0,i=>eLI=i);
 const E={on:false,bpm:72,next:0,beat:1,iv:0,w:null,count:0};
 $('#beats').innerHTML=LAB.map((l,i)=>`<div class="beat${i?'':' play'}"><b>${l[0]}</b><span>${l[1]}</span></div>`).join('');
 const STEP=[[0,''],[0,'♯'],[1,''],[2,'♭'],[2,''],[3,''],[3,'♯'],[4,''],[5,'♭'],[5,''],[6,'♭'],[6,'']];
@@ -423,23 +463,24 @@ function staff(m){const H=7,bot=104,x=190;let g='';for(let i=0;i<5;i++)g+=`<line
     if(acc)g+=`<text x="${x-34}" y="${y+9}" font-size="28" fill="#f7f9fc">${acc}</text>`}
   $('#staff').innerHTML=g}
 function click(t,acc){if(!$('#eClick').checked)return;const o=AC.createOscillator(),g=AC.createGain();o.type='square';o.frequency.value=acc?1600:1000;
-  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(acc?.18:.1,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.04);o.connect(g);g.connect(master);o.start(t);o.stop(t+.05)}
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(acc?.32:.2,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.04);o.connect(g);g.connect(master);o.start(t);o.stop(t+.05)}
 function pick(){const[a,b]=RANGES[eRI][1];let w;do w=ri(a,b);while(E.w&&w===E.w.w&&b>a);return{w,c:w-NOTS[eNI][1]}}
 function at(t,fn){later(fn,Math.max(0,(t-AC.currentTime)*1000))}
 function lit(i){document.querySelectorAll('.beat').forEach((b,j)=>b.classList.toggle('on',j===i))}
-function eSched(beat,t){const spb=60/E.bpm;click(t,beat===0);at(t,()=>{lit(beat);
-    $('#eHint').textContent=['Toca la nota una negra entera.','Retira el instrumento sin aflojar la embocadura.','Coloca el instrumento, labios listos.','Respira en tempo y cierra los labios arriba de la respiración.'][beat];
-    if(beat===0&&E.w){E.count++;$('#eC').textContent=E.count}
-    if(beat===1){$('#eN').classList.add('hid');}});
-  if(beat===3){const ta=t+spb/2,n=pick();at(ta,()=>{E.w=n;staff(n.w);$('#eN').textContent=NOTES[n.w%12]+' '+(Math.floor(n.w/12)-1);$('#eN').classList.remove('hid')});
-    if($('#eRef').checked)later(()=>{const v=voice(mf(n.c),.2);later(()=>v.stop(.05),spb*500*.9)},Math.max(0,(ta-AC.currentTime)*1000))}}
-function eTick(){while(E.next<AC.currentTime+.12){eSched(E.beat,E.next);E.next+=60/E.bpm;E.beat=(E.beat+1)%4}}
-function eStart(){ac();E.on=true;E.beat=1;E.count=0;E.w=null;$('#eC').textContent=0;E.next=AC.currentTime+.2;E.iv=setInterval(eTick,25);$('#eGo').textContent='Parar';$('#eGo').classList.remove('pri')}
+function eSched(beat,t,ci){const spb=60/E.bpm;click(t,beat===0);at(t,()=>{lit(ci?-1:beat);document.querySelectorAll('.beat').forEach((b,j)=>b.classList.toggle('ci',ci&&j===beat));
+    $('#eHint').textContent=ci?`Entrada… ${beat+1}`:['Toca la nota una negra entera.','Retira el instrumento sin aflojar la embocadura.','Coloca el instrumento, labios listos.','Respira en tempo y cierra los labios arriba de la respiración.'][beat];
+    if(beat===0&&E.w&&!ci){E.count++;$('#eC').textContent=E.count}
+    if(beat===1&&!ci){$('#eN').classList.add('hid');}});
+  if(beat===3){const lead=LEADS[eLI][1],ta=t+spb*(1-lead),n=pick();at(ta,()=>{E.w=n;staff(n.w);$('#eN').textContent=NOTES[n.w%12]+' '+(Math.floor(n.w/12)-1);$('#eN').classList.remove('hid')});
+    if($('#eRef').checked)noteAt(mf(n.c),ta,spb*lead*.92,.28)}}
+function eTick(){while(E.next<AC.currentTime+.12){eSched(E.beat,E.next,E.ci);if(E.ci&&E.beat===3)E.ci=false;E.next+=60/E.bpm;E.beat=(E.beat+1)%4}}
+function eStart(){ac();E.on=true;E.beat=0;E.ci=true;E.count=0;E.w=null;$('#eC').textContent=0;E.next=AC.currentTime+.2;E.iv=setInterval(eTick,25);$('#eGo').textContent='Parar';$('#eGo').classList.remove('pri')}
 function eStop(){if(!E.on)return;E.on=false;clearInterval(E.iv);lit(-1);$('#eGo').textContent='Empezar';$('#eGo').classList.add('pri');$('#eN').classList.add('hid');$('#eN').textContent='?';staff(null)}
 $('#eGo').onclick=()=>E.on?(clearTimers(),eStop()):eStart();
 $('#eTempo').oninput=e=>{E.bpm=+e.target.value;$('#eBpm').textContent=E.bpm;$('#eB').textContent=E.bpm};
 staff(null);
 
+document.querySelectorAll('.mvol').forEach(r=>{r.value=Math.round(mvol*100);r.oninput=()=>setVol(r.value/100)});
 route();
 }
 </script>
