@@ -169,6 +169,7 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
 .tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tabs [aria-current=page]{color:#0a1424;background:var(--silver)}
 .wrap{padding-bottom:110px}
+.sndset .chip small{font-size:12px;opacity:.7;margin-left:4px}.sndtry{width:100%;margin-top:12px;min-height:44px}
 .sndbtn{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 12px 6px 10px;border-radius:14px;background:var(--card);text-align:left;max-width:58vw}
 .sndbtn svg{width:22px;height:22px;flex:none;fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .sndbtn span{display:grid;line-height:1.15;min-width:0}.sndbtn b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sndbtn small{font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -542,7 +543,7 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
       <div><b>Récords</b><span>Tus 10 mejores partidas de cada modo.</span></div><i>›</i></button>
   </div>
   <p class="best" id="bests"></p>
-  <p class="best" style="opacity:.6">Versión 24 nov · 4</p>
+  <p class="best" style="opacity:.6">Versión 24 nov · 5</p>
 </section>
 
 <!-- INTERVALOS -->
@@ -848,7 +849,7 @@ function clearTimers(){while(timers.length)clearTimeout(timers.pop())}
 function note(f,at,dur,el){ac();const t0=AC.currentTime+.05+at;noteAt(f,t0,dur);later(()=>el&&el.classList.add('play'),at*1000+50);later(()=>el&&el.classList.remove('play'),(at+dur)*1000+50)}
 $('#timbre').onchange=e=>{timbre=e.target.value;store.set('timbre',timbre);if(AC)sampLoad(SMAP[timbre]);sampStatus()};
 const st=(()=>{try{return localStorage.getItem('ingroup-timbre')}catch(e){}})();if(st&&TIM[st]){timbre=st;$('#timbre').value=st}
-function sndSheet(){const t=$('#timbre');$('#sndTim').innerHTML=[...t.options].map(o=>`<button class="chip" data-v="${o.value}" aria-pressed="${o.value===timbre}">${o.text}</button>`).join('');
+let sndSheet=function(){const t=$('#timbre');$('#sndTim').innerHTML=[...t.options].map(o=>`<button class="chip" data-v="${o.value}" aria-pressed="${o.value===timbre}">${o.text}</button>`).join('');
   $('#sndRoom').innerHTML=ROOMS.map((r,i)=>`<button class="room" data-i="${i}" aria-pressed="${i===roomI}"><i style="--w:${Math.max(8,r[2]/5*100)}%"></i><b>${r[0]}</b><span>${r[1]}</span></button>`).join('');sampStatus()}
 $('#sndBtn').onclick=()=>{ac();sndSheet();$('#mSnd').classList.add('on')};
 $('#sndOk').onclick=()=>$('#mSnd').classList.remove('on');
@@ -857,6 +858,15 @@ $('#sndTim').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;const
 $('#sndRoom').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;setRoom(+b.dataset.i);sndSheet()};
 $('#sndTry').onclick=()=>{ac();const t=AC.currentTime+.08,r=mf(58);[0,7,12,16].forEach((s,k)=>noteAt(cents(r*2**(s/12),JUST[s]||0),t+k*.12,1.6-k*.12,.16*(1-k*.12)))};
 sndLabel();
+document.querySelectorAll('.view').forEach(v=>{const st=[...v.querySelectorAll('.settings')].pop();if(st)st.insertAdjacentHTML('beforeend','<div class="set sndset"><div class="lab">Instrumento</div><div class="chips sndT"></div><div class="lab" style="margin-top:14px">Sala · reverberación</div><div class="chips sndR"></div><button class="sndtry" type="button">Probar la sala</button></div>')});
+function sndSets(){const t=$('#timbre'),T=[...t.options].map(o=>`<button class="chip" data-v="${o.value}" aria-pressed="${o.value===timbre}">${o.text}</button>`).join(''),R=ROOMS.map((r,i)=>`<button class="chip" data-i="${i}" aria-pressed="${i===roomI}">${r[0]}${r[2]?` <small>${r[1]}</small>`:''}</button>`).join('');
+  document.querySelectorAll('.sndT').forEach(e=>e.innerHTML=T);document.querySelectorAll('.sndR').forEach(e=>e.innerHTML=R)}
+document.addEventListener('click',e=>{const b=e.target.closest('.sndset button');if(!b)return;
+  if(b.classList.contains('sndtry'))return $('#sndTry').click();
+  if(b.dataset.v){const t=$('#timbre');t.value=b.dataset.v;t.dispatchEvent(new Event('change'));sndLabel()}else if(b.dataset.i!=null){ac();setRoom(+b.dataset.i)}sndSets()});
+const _sndSheet=sndSheet;sndSheet=function(){_sndSheet();sndSets()};
+$('#sndOk').addEventListener('click',sndSets);
+sndSets();
 
 /* ---------- récords ---------- */
 const MODES=[['int','Intervalos','intervalos'],['tune','Afinar nota','afinar'],['chord','Construir acorde','acordes'],['emb','Embocadura','embocadura']];
