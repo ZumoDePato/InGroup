@@ -150,7 +150,7 @@ def stretch(voices, bars, ferm, total):
             res.append([midi, b - a])
             t += d
         nv.append((name, res))
-    return nv, [m(b) for b in bars if b < total], m(total)
+    return nv, [m(b) for b in bars if b < total], m(total), sorted(set(m(f) for f in fs))
 
 
 def merge_rests(notes):
@@ -218,7 +218,7 @@ def main():
         bpm = 60 if beat != 1 else (66 if f.startswith('BACH:') else 76)
         voices = [(n, merge_rests(v)) for n, v in voices if not any(d in n.lower() for d in DROP.get(title, ()))]
         voices.sort(key=lambda nv: -sum(p for p, _ in nv[1] if p is not None) / max(1, sum(1 for p, _ in nv[1] if p is not None)))
-        voices, bars, total = stretch(voices, bars, ferm, total)
+        voices, bars, total, fends = stretch(voices, bars, ferm, total)
         for _, notes in voices:
             assert sum(d for _, d in notes) == total
             for _, d in notes:
@@ -231,7 +231,7 @@ def main():
         src = 'bach' if f.startswith('BACH:') else 'pl'
         ident = re.sub(r'[^a-z0-9]+', '-', (comp.split()[-1] + '-' + title).lower()).strip('-')[:48]
         out.append({'id': ident, 'era': era, 't': title, 'c': comp, 'y': year, 'note': note, 'src': src, 'file': os.path.basename(f.replace('BACH:', '')),
-                    'v': nm, 'm': meter or '4/4', 'beat': beat, 'bpm': bpm, 'T': T, 'o': list(offs), 'bars': [int(b / UNIT) for b in bars], 'n': enc})
+                    'v': nm, 'm': meter or '4/4', 'beat': beat, 'bpm': bpm, 'T': T, 'o': list(offs), 'bars': [int(b / UNIT) for b in bars], 'f': [int(x / UNIT) for x in fends], 'n': enc})
         rng = []
         for i, (_, notes) in enumerate(voices):
             ps = [p for p, _ in notes if p is not None]
