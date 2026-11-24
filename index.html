@@ -169,6 +169,17 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
 .tabs svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tabs [aria-current=page]{color:#0a1424;background:var(--silver)}
 .wrap{padding-bottom:110px}
+.sndbtn{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 12px 6px 10px;border-radius:14px;background:var(--card);text-align:left;max-width:58vw}
+.sndbtn svg{width:22px;height:22px;flex:none;fill:none;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sndbtn span{display:grid;line-height:1.15;min-width:0}.sndbtn b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sndbtn small{font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modal.sheetm{align-items:flex-end;padding:0}.modal.sheetm .box{width:min(100%,560px);border-radius:24px 24px 0 0;text-align:left;padding:20px 18px calc(18px + env(safe-area-inset-bottom));max-height:88vh;overflow:auto;animation:sheetup .28s ease-out}
+@keyframes sheetup{from{transform:translateY(40px);opacity:0}}
+.slab{font-size:14px;font-weight:600;margin:16px 0 8px;display:flex;justify-content:space-between;gap:10px}.slab .sndstate{max-width:none;text-align:right;font-weight:400}
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.room{position:relative;display:grid;gap:2px;text-align:left;min-height:58px;padding:10px 12px;border-radius:14px;background:var(--card2);overflow:hidden}
+.room i{position:absolute;left:0;bottom:0;height:4px;width:var(--w);background:linear-gradient(90deg,#5d7fb8,var(--acc));border-radius:0 2px 0 0}
+.room b{font-size:15px}.room span{font-size:12px;color:var(--mute);font-weight:500}
+.room[aria-pressed=true]{background:var(--silver);color:#0a1424;border-color:transparent}.room[aria-pressed=true] span{color:#33415a}
 .sndstate{font-size:12px;color:var(--mute);text-align:right;max-width:110px;line-height:1.2}
 .dstage .top{align-items:flex-start}
 .live{display:inline-flex;align-items:flex-end;gap:3px;height:22px;padding:4px 10px;border-radius:999px;background:rgba(0,0,0,.25);border:1px solid var(--line)}
@@ -346,8 +357,8 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
 <header>
   <a class="logo" href="#"><svg><use href="#logo"/></svg><span>Ingroup</span></a>
   <span class="sp"></span>
-  <span class="sndstate" id="sndState"></span>
-  <select id="timbre" aria-label="Sonido">
+  <button class="sndbtn" id="sndBtn" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg><span><b id="sndLbl">Trompeta</b><small id="sndRoomLbl">Sala de cámara</small></span></button>
+  <select id="timbre" aria-label="Sonido" hidden>
     <option value="trompeta">Trompeta</option>
     <option value="fliscorno">Fliscorno</option>
     <option value="trombon">Trombón</option>
@@ -531,7 +542,7 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
       <div><b>Récords</b><span>Tus 10 mejores partidas de cada modo.</span></div><i>›</i></button>
   </div>
   <p class="best" id="bests"></p>
-  <p class="best" style="opacity:.6">Versión 24 nov · 3</p>
+  <p class="best" style="opacity:.6">Versión 24 nov · 4</p>
 </section>
 
 <!-- INTERVALOS -->
@@ -739,6 +750,16 @@ button.wrong{background:rgba(255,133,119,.18);border-color:var(--bad)}
   <p class="hint" style="margin-top:14px">Se guardan en este dispositivo.</p>
 </section>
 </div>
+<div class="modal sheetm" id="mSnd" role="dialog" aria-modal="true" aria-labelledby="sndT"><div class="box">
+  <h2 id="sndT">Sonido</h2>
+  <div class="slab">Instrumento <span class="sndstate" id="sndState"></span></div>
+  <div class="chips" id="sndTim"></div>
+  <div class="slab">Sala · reverberación</div>
+  <div class="rooms" id="sndRoom"></div>
+  <div class="slab">Volumen</div>
+  <input type="range" class="mvol" min="0" max="100" aria-label="Volumen general">
+  <div class="row" style="margin-top:14px"><button class="big" id="sndTry">Probar</button><button class="pri big" id="sndOk">Listo</button></div>
+</div></div>
 <div class="modal" id="mQuit" role="dialog" aria-modal="true" aria-labelledby="qT"><div class="box">
   <svg class="qi" aria-hidden="true"><use href="#logo"/></svg>
   <h2 id="qT">¿Abandonar la partida?</h2>
@@ -772,9 +793,19 @@ const TIM={
   trompa:{h:[1,.5,.28,.14,.07,.035],cut:[500,1700],q:.7},
   puro:{h:[1],cut:[14000,14000],q:.1},
   coro:{h:[1,.55,.35,.22,.14,.09,.05],cut:[1200,2600],q:.6}};
+/* ---- salas: reverberación por convolución con respuestas al impulso generadas ---- */
+const ROOMS=[['Seco','sin reverberación',0,0,0],['Aula de ensayo','0,7 s',.7,.006,.2],['Sala de cámara','1,3 s',1.3,.012,.26],['Auditorio','2 s',2,.02,.3],['Iglesia','3,2 s',3.2,.028,.34],['Catedral','5 s',5,.04,.38]];
+const REV={conv:null,wet:null,cache:{}};let roomI=(()=>{try{const v=localStorage.getItem('ingroup-room');return v==null?2:+v}catch(e){return 2}})();
+function roomIR(i){if(REV.cache[i])return REV.cache[i];const[, ,rt,pre]=ROOMS[i],sr=AC.sampleRate,len=Math.ceil(sr*(rt*1.15+pre)),b=AC.createBuffer(2,len,sr),p0=Math.round(pre*sr);
+  for(let c=0;c<2;c++){const d=b.getChannelData(c);let lp=0;for(let n=p0;n<len;n++){const t=(n-p0)/sr,env=Math.exp(-6.9*t/rt),k=Math.min(.95,.25+t/rt*.7);lp=lp*k+(Math.random()*2-1)*(1-k);d[n]=lp*env*(1+(t<.08?(Math.random()<.004?6:0):0))}}
+  REV.cache[i]=b;return b}
+function setRoom(i){roomI=i;try{localStorage.setItem('ingroup-room',i)}catch(e){}if(!AC||!REV.conv)return sndLabel();const r=ROOMS[i],n=AC.currentTime;
+  REV.wet.gain.setTargetAtTime(0,n,.02);if(r[2]){setTimeout(()=>{REV.conv.buffer=roomIR(i);REV.wet.gain.setTargetAtTime(r[4]*2.2,AC.currentTime,.05)},60)}sndLabel()}
+function sndLabel(){const t=$('#timbre');if(!t)return;$('#sndLbl').textContent=t.options[t.selectedIndex].text;$('#sndRoomLbl').textContent=ROOMS[roomI][0]}
 let KEEP=null,unlocked=false,mvol=(()=>{try{const v=localStorage.getItem('ingroup-vol');return v==null?.85:+v}catch(e){return .85}})();
 function ac(){if(!AC){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
-    AC=new(window.AudioContext||window.webkitAudioContext)();const comp=AC.createDynamicsCompressor();master=AC.createGain();master.gain.value=mvol;master.connect(comp);comp.connect(AC.destination)}
+    AC=new(window.AudioContext||window.webkitAudioContext)();const comp=AC.createDynamicsCompressor();master=AC.createGain();master.gain.value=mvol;
+    const dry=AC.createGain();REV.conv=AC.createConvolver();REV.wet=AC.createGain();REV.wet.gain.value=0;master.connect(dry);dry.connect(comp);master.connect(REV.conv);REV.conv.connect(REV.wet);REV.wet.connect(comp);comp.connect(AC.destination);setRoom(roomI)}
   if(!unlocked){unlocked=true;try{const a=new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA');a.loop=true;a.setAttribute('playsinline','');KEEP=a;a.play().catch(()=>{})}catch(e){}
     try{const b=AC.createBuffer(1,1,22050),src=AC.createBufferSource();src.buffer=b;src.connect(AC.destination);src.start(0)}catch(e){}}
   if(AC.state!=='running')AC.resume();if(SMAP[timbre]&&!SBUF[SMAP[timbre]])sampLoad(SMAP[timbre]);return AC}
@@ -817,6 +848,15 @@ function clearTimers(){while(timers.length)clearTimeout(timers.pop())}
 function note(f,at,dur,el){ac();const t0=AC.currentTime+.05+at;noteAt(f,t0,dur);later(()=>el&&el.classList.add('play'),at*1000+50);later(()=>el&&el.classList.remove('play'),(at+dur)*1000+50)}
 $('#timbre').onchange=e=>{timbre=e.target.value;store.set('timbre',timbre);if(AC)sampLoad(SMAP[timbre]);sampStatus()};
 const st=(()=>{try{return localStorage.getItem('ingroup-timbre')}catch(e){}})();if(st&&TIM[st]){timbre=st;$('#timbre').value=st}
+function sndSheet(){const t=$('#timbre');$('#sndTim').innerHTML=[...t.options].map(o=>`<button class="chip" data-v="${o.value}" aria-pressed="${o.value===timbre}">${o.text}</button>`).join('');
+  $('#sndRoom').innerHTML=ROOMS.map((r,i)=>`<button class="room" data-i="${i}" aria-pressed="${i===roomI}"><i style="--w:${Math.max(8,r[2]/5*100)}%"></i><b>${r[0]}</b><span>${r[1]}</span></button>`).join('');sampStatus()}
+$('#sndBtn').onclick=()=>{ac();sndSheet();$('#mSnd').classList.add('on')};
+$('#sndOk').onclick=()=>$('#mSnd').classList.remove('on');
+$('#mSnd').addEventListener('click',e=>{if(e.target.id==='mSnd')$('#mSnd').classList.remove('on')});
+$('#sndTim').onclick=e=>{const b=e.target.closest('[data-v]');if(!b)return;const t=$('#timbre');t.value=b.dataset.v;t.dispatchEvent(new Event('change'));sndSheet();sndLabel()};
+$('#sndRoom').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;setRoom(+b.dataset.i);sndSheet()};
+$('#sndTry').onclick=()=>{ac();const t=AC.currentTime+.08,r=mf(58);[0,7,12,16].forEach((s,k)=>noteAt(cents(r*2**(s/12),JUST[s]||0),t+k*.12,1.6-k*.12,.16*(1-k*.12)))};
+sndLabel();
 
 /* ---------- récords ---------- */
 const MODES=[['int','Intervalos','intervalos'],['tune','Afinar nota','afinar'],['chord','Construir acorde','acordes'],['emb','Embocadura','embocadura']];
