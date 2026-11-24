@@ -15,6 +15,12 @@ Web: https://zumodepato.github.io/InGroup/
 - **Boquilla**: ejercicio de embocadura con metrónomo y varios pentagramas.
 - **Récords**.
 
+## Sonidos
+
+- Trompeta, trombón y trompa: muestras grabadas de [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE) (Versilian Studios), CC0 1.0. El fliscorno usa la trompeta con un filtro más oscuro.
+- Coro: [Sonatina Symphonic Orchestra](https://github.com/peastman/sso), Creative Commons Sampling Plus 1.0.
+- `samples/samples.json` guarda la frecuencia real medida de cada muestra para afinarla al cent; si las muestras no cargan, la app usa el sonido sintético. `tools/build_samples.py` las prepara.
+
 ## Tipografías
 
 - Notación: [Leland](https://github.com/musescore/MuseScore/tree/master/fonts/leland), la de MuseScore (SIL OFL 1.1). Textos de partitura: Edwin (SIL OFL 1.1). Subconjuntos en `fonts/` con sus licencias.
